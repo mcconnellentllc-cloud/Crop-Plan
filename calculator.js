@@ -64,8 +64,8 @@ const FERTILIZER = [
 const FERT_APPLICATION_RATE = 8.25;  // $/acre - Range: $6-9, 75% = $8.25
 
 // Expected yields (bu/acre)
-const IRRIGATED_YIELD = 220;
-const DRYLAND_YIELD = 140;
+const IRRIGATED_YIELD = 240;
+const DRYLAND_YIELD = 90;
 
 // ============================================
 // CALCULATION FUNCTIONS
