@@ -86,36 +86,37 @@ const PRE_CHEMICALS = [
     { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: GLYPHOSATE_COST },
     { name: 'Valor SX (flumioxazin)', ratePerAcre: 2.5, unit: 'oz', costPerAcre: VALOR_COST },
     { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: ATRAZINE_COST },
-    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerAcre: METOLACHLOR_COST },
     { name: 'Fluroxypyr (Starane Ultra)', ratePerAcre: 0.67, unit: 'pt', costPerAcre: FLUROXYPYR_COST },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE }
 ];
 
 // Pre-calculated cost per acre for Pre-emergence (including application)
-const PRE_COST_PER_ACRE = GLYPHOSATE_COST + VALOR_COST + ATRAZINE_COST + METOLACHLOR_COST + FLUROXYPYR_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
+const PRE_COST_PER_ACRE = GLYPHOSATE_COST + VALOR_COST + ATRAZINE_COST + FLUROXYPYR_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
 
-// Post-Emergence Chemicals - Irrigated (includes Warrant)
+// Post-Emergence Chemicals - Irrigated (includes Warrant and Metolachlor)
 const POST_CHEMICALS_IRR = [
     { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: GLYPHOSATE_COST },
     { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerAcre: AMS_COST },
     { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: ATRAZINE_COST },
+    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerAcre: METOLACHLOR_COST },
     { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerAcre: DIFLEXX_COST },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE },
     { name: 'Acetochlor (Warrant)', ratePerAcre: 3.0, unit: 'pt', costPerAcre: WARRANT_COST }
 ];
 
-// Post-Emergence Chemicals - Dryland (no Warrant)
+// Post-Emergence Chemicals - Dryland (includes Metolachlor, no Warrant)
 const POST_CHEMICALS_DRY = [
     { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: GLYPHOSATE_COST },
     { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerAcre: AMS_COST },
     { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: ATRAZINE_COST },
+    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerAcre: METOLACHLOR_COST },
     { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerAcre: DIFLEXX_COST },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE }
 ];
 
 // Pre-calculated cost per acre for Post-emergence (including application)
-const POST_COST_PER_ACRE_IRR = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + WARRANT_COST + CHEM_APPLICATION_RATE;
-const POST_COST_PER_ACRE_DRY = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
+const POST_COST_PER_ACRE_IRR = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + METOLACHLOR_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + WARRANT_COST + CHEM_APPLICATION_RATE;
+const POST_COST_PER_ACRE_DRY = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + METOLACHLOR_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
 
 // Fertilizer Programs - Irrigated vs Dryland
 const FERT_APPLICATION_RATE = 8.25;
