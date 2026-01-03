@@ -671,6 +671,95 @@ function calculate() {
     styleNetReturn('irrigatedNet', irrigatedNet);
     styleNetReturn('drylandNet', drylandNet);
     styleNetReturn('totalNet', totalNet);
+
+    // ============================================
+    // PROJECTED VS ACTUAL INPUT SUMMARY
+    // ============================================
+
+    // Calculate per-acre costs for irrigated
+    const irrOpsPerAcre = irrigatedAcres > 0 ? irrOpsTotal / irrigatedAcres : 0;
+    const irrIrrPerAcre = irrigatedAcres > 0 ? irrIrrigationTotal / irrigatedAcres : 0;
+    const irrRentPerAcre = LAND_RENTAL.irrigated.costPerAcre;
+    const irrSeedPerAcre = SEED_COSTS.irrigated.costPerAcre;
+    const irrInsPerAcre = irrigatedAcres > 0 ? irrInsTotal / irrigatedAcres : 0;
+    const irrChemPerAcre = irrigatedAcres > 0 ? irrChemTotal / irrigatedAcres : 0;
+    const irrFertPerAcre = irrigatedAcres > 0 ? irrFertTotal / irrigatedAcres : 0;
+    const irrTotalPerAcre = irrigatedAcres > 0 ? irrigatedTotal / irrigatedAcres : 0;
+
+    // Calculate per-acre costs for dryland
+    const dryOpsPerAcre = drylandAcres > 0 ? dryOpsTotal / drylandAcres : 0;
+    const dryRentPerAcre = LAND_RENTAL.dryland.costPerAcre;
+    const drySeedPerAcre = SEED_COSTS.dryland.costPerAcre;
+    const dryInsPerAcre = drylandAcres > 0 ? dryInsTotal / drylandAcres : 0;
+    const dryChemPerAcre = drylandAcres > 0 ? dryChemTotal / drylandAcres : 0;
+    const dryFertPerAcre = drylandAcres > 0 ? dryFertTotal / drylandAcres : 0;
+    const dryTotalPerAcre = drylandAcres > 0 ? drylandTotal / drylandAcres : 0;
+
+    // Store projected values in data attributes for later use
+    window.projectedValues = {
+        irr: {
+            ops: irrOpsPerAcre,
+            irrigation: irrIrrPerAcre,
+            rent: irrRentPerAcre,
+            seed: irrSeedPerAcre,
+            ins: irrInsPerAcre,
+            chem: irrChemPerAcre,
+            fert: irrFertPerAcre,
+            total: irrTotalPerAcre,
+            acres: irrigatedAcres
+        },
+        dry: {
+            ops: dryOpsPerAcre,
+            rent: dryRentPerAcre,
+            seed: drySeedPerAcre,
+            ins: dryInsPerAcre,
+            chem: dryChemPerAcre,
+            fert: dryFertPerAcre,
+            total: dryTotalPerAcre,
+            acres: drylandAcres
+        },
+        revenue: totalRevenue,
+        grandTotal: grandTotal
+    };
+
+    // Update projected displays
+    document.getElementById('irrOpsProjected').textContent = formatCurrencyDecimal(irrOpsPerAcre);
+    document.getElementById('irrIrrProjected').textContent = formatCurrencyDecimal(irrIrrPerAcre);
+    document.getElementById('irrRentProjected').textContent = formatCurrencyDecimal(irrRentPerAcre);
+    document.getElementById('irrSeedProjected').textContent = formatCurrencyDecimal(irrSeedPerAcre);
+    document.getElementById('irrInsProjected').textContent = formatCurrencyDecimal(irrInsPerAcre);
+    document.getElementById('irrChemProjected').textContent = formatCurrencyDecimal(irrChemPerAcre);
+    document.getElementById('irrFertProjected').textContent = formatCurrencyDecimal(irrFertPerAcre);
+    document.getElementById('irrTotalProjected').innerHTML = '<strong>' + formatCurrencyDecimal(irrTotalPerAcre) + '</strong>';
+    document.getElementById('irrGrandProjected').innerHTML = '<strong>' + formatCurrency(irrigatedTotal) + '</strong>';
+
+    document.getElementById('dryOpsProjected').textContent = formatCurrencyDecimal(dryOpsPerAcre);
+    document.getElementById('dryRentProjected').textContent = formatCurrencyDecimal(dryRentPerAcre);
+    document.getElementById('drySeedProjected').textContent = formatCurrencyDecimal(drySeedPerAcre);
+    document.getElementById('dryInsProjected').textContent = formatCurrencyDecimal(dryInsPerAcre);
+    document.getElementById('dryChemProjected').textContent = formatCurrencyDecimal(dryChemPerAcre);
+    document.getElementById('dryFertProjected').textContent = formatCurrencyDecimal(dryFertPerAcre);
+    document.getElementById('dryTotalProjected').innerHTML = '<strong>' + formatCurrencyDecimal(dryTotalPerAcre) + '</strong>';
+    document.getElementById('dryGrandProjected').innerHTML = '<strong>' + formatCurrency(drylandTotal) + '</strong>';
+
+    // Set actual inputs to projected values (if empty or on first load)
+    setActualDefaults('irrOpsActual', irrOpsPerAcre);
+    setActualDefaults('irrIrrActual', irrIrrPerAcre);
+    setActualDefaults('irrRentActual', irrRentPerAcre);
+    setActualDefaults('irrSeedActual', irrSeedPerAcre);
+    setActualDefaults('irrInsActual', irrInsPerAcre);
+    setActualDefaults('irrChemActual', irrChemPerAcre);
+    setActualDefaults('irrFertActual', irrFertPerAcre);
+
+    setActualDefaults('dryOpsActual', dryOpsPerAcre);
+    setActualDefaults('dryRentActual', dryRentPerAcre);
+    setActualDefaults('drySeedActual', drySeedPerAcre);
+    setActualDefaults('dryInsActual', dryInsPerAcre);
+    setActualDefaults('dryChemActual', dryChemPerAcre);
+    setActualDefaults('dryFertActual', dryFertPerAcre);
+
+    // Update actuals display
+    updateActuals();
 }
 
 function styleNetReturn(elementId, value) {
@@ -679,6 +768,146 @@ function styleNetReturn(elementId, value) {
         element.style.color = '#27ae60';
     } else {
         element.style.color = '#c0392b';
+    }
+}
+
+// Set default actual values (only if input is empty)
+function setActualDefaults(inputId, value) {
+    const input = document.getElementById(inputId);
+    if (input && (input.value === '' || input.dataset.initialized !== 'true')) {
+        input.value = value.toFixed(2);
+        input.dataset.initialized = 'true';
+    }
+}
+
+// Update all actual calculations and differences
+function updateActuals() {
+    if (!window.projectedValues) return;
+
+    const pv = window.projectedValues;
+
+    // Get actual values from inputs (irrigated)
+    const irrActuals = {
+        ops: parseFloat(document.getElementById('irrOpsActual').value) || 0,
+        irrigation: parseFloat(document.getElementById('irrIrrActual').value) || 0,
+        rent: parseFloat(document.getElementById('irrRentActual').value) || 0,
+        seed: parseFloat(document.getElementById('irrSeedActual').value) || 0,
+        ins: parseFloat(document.getElementById('irrInsActual').value) || 0,
+        chem: parseFloat(document.getElementById('irrChemActual').value) || 0,
+        fert: parseFloat(document.getElementById('irrFertActual').value) || 0
+    };
+
+    // Get actual values from inputs (dryland)
+    const dryActuals = {
+        ops: parseFloat(document.getElementById('dryOpsActual').value) || 0,
+        rent: parseFloat(document.getElementById('dryRentActual').value) || 0,
+        seed: parseFloat(document.getElementById('drySeedActual').value) || 0,
+        ins: parseFloat(document.getElementById('dryInsActual').value) || 0,
+        chem: parseFloat(document.getElementById('dryChemActual').value) || 0,
+        fert: parseFloat(document.getElementById('dryFertActual').value) || 0
+    };
+
+    // Calculate irrigated differences and totals
+    const irrDiffs = {
+        ops: irrActuals.ops - pv.irr.ops,
+        irrigation: irrActuals.irrigation - pv.irr.irrigation,
+        rent: irrActuals.rent - pv.irr.rent,
+        seed: irrActuals.seed - pv.irr.seed,
+        ins: irrActuals.ins - pv.irr.ins,
+        chem: irrActuals.chem - pv.irr.chem,
+        fert: irrActuals.fert - pv.irr.fert
+    };
+
+    const irrActualTotal = irrActuals.ops + irrActuals.irrigation + irrActuals.rent +
+                          irrActuals.seed + irrActuals.ins + irrActuals.chem + irrActuals.fert;
+    const irrTotalDiff = irrActualTotal - pv.irr.total;
+    const irrGrandActual = irrActualTotal * pv.irr.acres;
+    const irrGrandDiff = irrGrandActual - (pv.irr.total * pv.irr.acres);
+
+    // Calculate dryland differences and totals
+    const dryDiffs = {
+        ops: dryActuals.ops - pv.dry.ops,
+        rent: dryActuals.rent - pv.dry.rent,
+        seed: dryActuals.seed - pv.dry.seed,
+        ins: dryActuals.ins - pv.dry.ins,
+        chem: dryActuals.chem - pv.dry.chem,
+        fert: dryActuals.fert - pv.dry.fert
+    };
+
+    const dryActualTotal = dryActuals.ops + dryActuals.rent + dryActuals.seed +
+                          dryActuals.ins + dryActuals.chem + dryActuals.fert;
+    const dryTotalDiff = dryActualTotal - pv.dry.total;
+    const dryGrandActual = dryActualTotal * pv.dry.acres;
+    const dryGrandDiff = dryGrandActual - (pv.dry.total * pv.dry.acres);
+
+    // Update irrigated difference displays
+    updateDiffCell('irrOpsDiff', irrDiffs.ops);
+    updateDiffCell('irrIrrDiff', irrDiffs.irrigation);
+    updateDiffCell('irrRentDiff', irrDiffs.rent);
+    updateDiffCell('irrSeedDiff', irrDiffs.seed);
+    updateDiffCell('irrInsDiff', irrDiffs.ins);
+    updateDiffCell('irrChemDiff', irrDiffs.chem);
+    updateDiffCell('irrFertDiff', irrDiffs.fert);
+
+    document.getElementById('irrTotalActual').innerHTML = '<strong>' + formatCurrencyDecimal(irrActualTotal) + '</strong>';
+    updateDiffCell('irrTotalDiff', irrTotalDiff, true);
+    document.getElementById('irrGrandActual').innerHTML = '<strong>' + formatCurrency(irrGrandActual) + '</strong>';
+    updateDiffCell('irrGrandDiff', irrGrandDiff, true);
+
+    // Update dryland difference displays
+    updateDiffCell('dryOpsDiff', dryDiffs.ops);
+    updateDiffCell('dryRentDiff', dryDiffs.rent);
+    updateDiffCell('drySeedDiff', dryDiffs.seed);
+    updateDiffCell('dryInsDiff', dryDiffs.ins);
+    updateDiffCell('dryChemDiff', dryDiffs.chem);
+    updateDiffCell('dryFertDiff', dryDiffs.fert);
+
+    document.getElementById('dryTotalActual').innerHTML = '<strong>' + formatCurrencyDecimal(dryActualTotal) + '</strong>';
+    updateDiffCell('dryTotalDiff', dryTotalDiff, true);
+    document.getElementById('dryGrandActual').innerHTML = '<strong>' + formatCurrency(dryGrandActual) + '</strong>';
+    updateDiffCell('dryGrandDiff', dryGrandDiff, true);
+
+    // Update final comparison section
+    const totalActualExpenses = irrGrandActual + dryGrandActual;
+    const totalProjectedExpenses = pv.grandTotal;
+    const expenseVariance = totalActualExpenses - totalProjectedExpenses;
+
+    const projectedNet = pv.revenue - totalProjectedExpenses;
+    const actualNet = pv.revenue - totalActualExpenses;
+    const netVariance = actualNet - projectedNet;
+
+    document.getElementById('projectedTotalExpenses').textContent = formatCurrency(totalProjectedExpenses);
+    document.getElementById('projectedRevenue').textContent = formatCurrency(pv.revenue);
+    document.getElementById('projectedNet').textContent = formatCurrency(projectedNet);
+
+    document.getElementById('actualTotalExpenses').textContent = formatCurrency(totalActualExpenses);
+    document.getElementById('actualRevenue').textContent = formatCurrency(pv.revenue);
+    document.getElementById('actualNet').textContent = formatCurrency(actualNet);
+
+    document.getElementById('varianceExpenses').textContent = (expenseVariance >= 0 ? '+' : '') + formatCurrency(expenseVariance);
+    document.getElementById('varianceRevenue').textContent = '$0';
+    document.getElementById('varianceNet').textContent = (netVariance >= 0 ? '+' : '') + formatCurrency(netVariance);
+
+    // Color the variance net
+    const varianceNetEl = document.getElementById('varianceNet');
+    if (netVariance >= 0) {
+        varianceNetEl.style.color = '#27ae60';
+    } else {
+        varianceNetEl.style.color = '#e74c3c';
+    }
+}
+
+// Helper to update difference cell with color coding
+function updateDiffCell(cellId, diff, isBold = false) {
+    const cell = document.getElementById(cellId);
+    const formatted = (diff >= 0 ? '+' : '') + formatCurrencyDecimal(diff);
+    cell.innerHTML = isBold ? '<strong>' + formatted + '</strong>' : formatted;
+
+    cell.classList.remove('positive', 'negative');
+    if (diff > 0.01) {
+        cell.classList.add('positive'); // Red - cost more than projected
+    } else if (diff < -0.01) {
+        cell.classList.add('negative'); // Green - cost less than projected
     }
 }
 

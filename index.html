@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-brand">2025 Crop Planner</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Cost Calculator</a></li>
+                <li><a href="spray-plans.html">Spray Programs</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <header>
         <div class="container">
             <h1>2025 Crop Planner</h1>
@@ -578,6 +589,207 @@
                     <p id="profitPerAcre">$0/acre average</p>
                 </div>
             </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- INPUT COST SUMMARY - PROJECTED VS ACTUAL -->
+        <!-- ============================================ -->
+        <div class="section-header input-summary-header">
+            <h2>INPUT COST SUMMARY</h2>
+            <p>Projected (Best Guess) vs Actual Costs - Edit actual values as pricing is confirmed</p>
+        </div>
+
+        <!-- Irrigated Inputs -->
+        <section class="card input-summary-card">
+            <h2>IRRIGATED INPUTS - Cost Per Acre</h2>
+            <table class="input-table" id="irrInputTable">
+                <thead>
+                    <tr>
+                        <th>Input Category</th>
+                        <th>Projected</th>
+                        <th>Actual</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Field Operations</td>
+                        <td class="projected" id="irrOpsProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrOpsActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrOpsDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Irrigation</td>
+                        <td class="projected" id="irrIrrProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrIrrActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrIrrDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Land Rental</td>
+                        <td class="projected" id="irrRentProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrRentActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrRentDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Seed</td>
+                        <td class="projected" id="irrSeedProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrSeedActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrSeedDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Crop Insurance</td>
+                        <td class="projected" id="irrInsProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrInsActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrInsDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Chemical Program</td>
+                        <td class="projected" id="irrChemProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrChemActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrChemDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Fertilizer</td>
+                        <td class="projected" id="irrFertProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="irrFertActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="irrFertDiff">$0.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td><strong>TOTAL PER ACRE</strong></td>
+                        <td class="projected" id="irrTotalProjected"><strong>$0.00</strong></td>
+                        <td class="actual" id="irrTotalActual"><strong>$0.00</strong></td>
+                        <td class="difference" id="irrTotalDiff"><strong>$0.00</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL (360 ac)</strong></td>
+                        <td class="projected" id="irrGrandProjected"><strong>$0</strong></td>
+                        <td class="actual" id="irrGrandActual"><strong>$0</strong></td>
+                        <td class="difference" id="irrGrandDiff"><strong>$0</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Inputs -->
+        <section class="card input-summary-card">
+            <h2>DRYLAND INPUTS - Cost Per Acre</h2>
+            <table class="input-table" id="dryInputTable">
+                <thead>
+                    <tr>
+                        <th>Input Category</th>
+                        <th>Projected</th>
+                        <th>Actual</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Field Operations</td>
+                        <td class="projected" id="dryOpsProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="dryOpsActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="dryOpsDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Land Rental</td>
+                        <td class="projected" id="dryRentProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="dryRentActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="dryRentDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Seed</td>
+                        <td class="projected" id="drySeedProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="drySeedActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="drySeedDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Crop Insurance</td>
+                        <td class="projected" id="dryInsProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="dryInsActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="dryInsDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Chemical Program</td>
+                        <td class="projected" id="dryChemProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="dryChemActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="dryChemDiff">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Fertilizer</td>
+                        <td class="projected" id="dryFertProjected">$0.00</td>
+                        <td class="actual"><input type="number" id="dryFertActual" step="0.01" oninput="updateActuals()"></td>
+                        <td class="difference" id="dryFertDiff">$0.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td><strong>TOTAL PER ACRE</strong></td>
+                        <td class="projected" id="dryTotalProjected"><strong>$0.00</strong></td>
+                        <td class="actual" id="dryTotalActual"><strong>$0.00</strong></td>
+                        <td class="difference" id="dryTotalDiff"><strong>$0.00</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL (600 ac)</strong></td>
+                        <td class="projected" id="dryGrandProjected"><strong>$0</strong></td>
+                        <td class="actual" id="dryGrandActual"><strong>$0</strong></td>
+                        <td class="difference" id="dryGrandDiff"><strong>$0</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Projected vs Actual Summary -->
+        <section class="card comparison-summary-card">
+            <h2>PROJECTED VS ACTUAL - FINAL COMPARISON</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box projected-box">
+                    <h3>PROJECTED</h3>
+                    <div class="comp-row">
+                        <span>Total Expenses:</span>
+                        <span id="projectedTotalExpenses">$0</span>
+                    </div>
+                    <div class="comp-row">
+                        <span>Expected Revenue:</span>
+                        <span id="projectedRevenue">$0</span>
+                    </div>
+                    <div class="comp-row net">
+                        <span>Net Profit/Loss:</span>
+                        <span id="projectedNet">$0</span>
+                    </div>
+                </div>
+                <div class="comparison-box actual-box">
+                    <h3>ACTUAL</h3>
+                    <div class="comp-row">
+                        <span>Total Expenses:</span>
+                        <span id="actualTotalExpenses">$0</span>
+                    </div>
+                    <div class="comp-row">
+                        <span>Expected Revenue:</span>
+                        <span id="actualRevenue">$0</span>
+                    </div>
+                    <div class="comp-row net">
+                        <span>Net Profit/Loss:</span>
+                        <span id="actualNet">$0</span>
+                    </div>
+                </div>
+                <div class="comparison-box variance-box">
+                    <h3>VARIANCE</h3>
+                    <div class="comp-row">
+                        <span>Expense Difference:</span>
+                        <span id="varianceExpenses">$0</span>
+                    </div>
+                    <div class="comp-row">
+                        <span>Revenue Difference:</span>
+                        <span id="varianceRevenue">$0</span>
+                    </div>
+                    <div class="comp-row net">
+                        <span>Net Difference:</span>
+                        <span id="varianceNet">$0</span>
+                    </div>
+                </div>
+            </div>
+            <p class="comparison-note">Actual values default to Projected until changed. Edit the "Actual" column above as real costs are confirmed.</p>
         </section>
     </main>
 
