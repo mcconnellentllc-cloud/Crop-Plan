@@ -113,6 +113,28 @@
             </table>
         </section>
 
+        <!-- Irrigated Seed -->
+        <section class="card expense-card irrigated-section">
+            <h2>Seed</h2>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Details</th>
+                        <th>Cost/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="irrSeedBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Seed Subtotal</strong></td>
+                        <td id="irrSeedTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
         <!-- Irrigated Crop Insurance -->
         <section class="card expense-card irrigated-section">
             <h2>Crop Insurance (RCIS)</h2>
@@ -220,6 +242,7 @@
                 <div class="summary-item"><span>Field Operations:</span><span id="irrSummaryOps">$0</span></div>
                 <div class="summary-item"><span>Irrigation:</span><span id="irrSummaryIrr">$0</span></div>
                 <div class="summary-item"><span>Land Rental:</span><span id="irrSummaryRent">$0</span></div>
+                <div class="summary-item"><span>Seed:</span><span id="irrSummarySeed">$0</span></div>
                 <div class="summary-item"><span>Crop Insurance:</span><span id="irrSummaryIns">$0</span></div>
                 <div class="summary-item"><span>Chemical Program:</span><span id="irrSummaryChem">$0</span></div>
                 <div class="summary-item"><span>Fertilizer:</span><span id="irrSummaryFert">$0</span></div>
@@ -277,6 +300,28 @@
                     <tr class="total-row">
                         <td colspan="3"><strong>Land Rental Subtotal</strong></td>
                         <td id="dryRentTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Seed -->
+        <section class="card expense-card dryland-section">
+            <h2>Seed</h2>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Details</th>
+                        <th>Cost/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="drySeedBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Seed Subtotal</strong></td>
+                        <td id="drySeedTotal">$0</td>
                     </tr>
                 </tfoot>
             </table>
@@ -388,6 +433,7 @@
             <div class="summary-grid">
                 <div class="summary-item"><span>Field Operations:</span><span id="drySummaryOps">$0</span></div>
                 <div class="summary-item"><span>Land Rental:</span><span id="drySummaryRent">$0</span></div>
+                <div class="summary-item"><span>Seed:</span><span id="drySummarySeed">$0</span></div>
                 <div class="summary-item"><span>Crop Insurance:</span><span id="drySummaryIns">$0</span></div>
                 <div class="summary-item"><span>Chemical Program:</span><span id="drySummaryChem">$0</span></div>
                 <div class="summary-item"><span>Fertilizer:</span><span id="drySummaryFert">$0</span></div>
@@ -436,6 +482,12 @@
                         <td id="combRentIrr">$0</td>
                         <td id="combRentDry">$0</td>
                         <td id="combRentTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td>Seed</td>
+                        <td id="combSeedIrr">$0</td>
+                        <td id="combSeedDry">$0</td>
+                        <td id="combSeedTotal">$0</td>
                     </tr>
                     <tr>
                         <td>Crop Insurance</td>

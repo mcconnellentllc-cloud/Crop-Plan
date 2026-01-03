@@ -39,6 +39,14 @@ const LAND_RENTAL = {
 };
 
 // ============================================
+// SEED COSTS
+// ============================================
+const SEED_COSTS = {
+    irrigated: { name: 'Corn Seed', details: '~32,000 seeds/ac', costPerAcre: 130.00 },
+    dryland: { name: 'Corn Seed', details: '~24,000 seeds/ac', costPerAcre: 56.00 }
+};
+
+// ============================================
 // CROP INSURANCE - RCIS
 // ============================================
 const CROP_INSURANCE = {
@@ -195,6 +203,7 @@ function calculate() {
     let irrOpsTotal = 0;
     let irrIrrigationTotal = 0;
     let irrRentTotal = 0;
+    let irrSeedTotal = 0;
     let irrInsTotal = 0;
     let irrPreChemTotal = 0;
     let irrPostChemTotal = 0;
@@ -258,6 +267,20 @@ function calculate() {
     `;
     irrRentBody.appendChild(irrRentRow);
     document.getElementById('irrRentTotal').textContent = formatCurrency(irrRentTotal);
+
+    // Irrigated Seed
+    const irrSeedBody = document.getElementById('irrSeedBody');
+    irrSeedBody.innerHTML = '';
+    irrSeedTotal = SEED_COSTS.irrigated.costPerAcre * irrigatedAcres;
+    const irrSeedRow = document.createElement('tr');
+    irrSeedRow.innerHTML = `
+        <td>${SEED_COSTS.irrigated.name}</td>
+        <td>${SEED_COSTS.irrigated.details}</td>
+        <td>${formatCurrencyDecimal(SEED_COSTS.irrigated.costPerAcre)}</td>
+        <td>${formatCurrency(irrSeedTotal)}</td>
+    `;
+    irrSeedBody.appendChild(irrSeedRow);
+    document.getElementById('irrSeedTotal').textContent = formatCurrency(irrSeedTotal);
 
     // Irrigated Crop Insurance
     const irrInsBody = document.getElementById('irrInsBody');
@@ -364,10 +387,11 @@ function calculate() {
 
     // Irrigated Summary
     const irrChemTotal = irrPreChemTotal + irrPostChemTotal;
-    const irrigatedTotal = irrOpsTotal + irrIrrigationTotal + irrRentTotal + irrInsTotal + irrChemTotal + irrFertTotal;
+    const irrigatedTotal = irrOpsTotal + irrIrrigationTotal + irrRentTotal + irrSeedTotal + irrInsTotal + irrChemTotal + irrFertTotal;
     document.getElementById('irrSummaryOps').textContent = formatCurrency(irrOpsTotal);
     document.getElementById('irrSummaryIrr').textContent = formatCurrency(irrIrrigationTotal);
     document.getElementById('irrSummaryRent').textContent = formatCurrency(irrRentTotal);
+    document.getElementById('irrSummarySeed').textContent = formatCurrency(irrSeedTotal);
     document.getElementById('irrSummaryIns').textContent = formatCurrency(irrInsTotal);
     document.getElementById('irrSummaryChem').textContent = formatCurrency(irrChemTotal);
     document.getElementById('irrSummaryFert').textContent = formatCurrency(irrFertTotal);
@@ -379,6 +403,7 @@ function calculate() {
     // ============================================
     let dryOpsTotal = 0;
     let dryRentTotal = 0;
+    let drySeedTotal = 0;
     let dryInsTotal = 0;
     let dryPreChemTotal = 0;
     let dryPostChemTotal = 0;
@@ -425,6 +450,20 @@ function calculate() {
     `;
     dryRentBody.appendChild(dryRentRow);
     document.getElementById('dryRentTotal').textContent = formatCurrency(dryRentTotal);
+
+    // Dryland Seed
+    const drySeedBody = document.getElementById('drySeedBody');
+    drySeedBody.innerHTML = '';
+    drySeedTotal = SEED_COSTS.dryland.costPerAcre * drylandAcres;
+    const drySeedRow = document.createElement('tr');
+    drySeedRow.innerHTML = `
+        <td>${SEED_COSTS.dryland.name}</td>
+        <td>${SEED_COSTS.dryland.details}</td>
+        <td>${formatCurrencyDecimal(SEED_COSTS.dryland.costPerAcre)}</td>
+        <td>${formatCurrency(drySeedTotal)}</td>
+    `;
+    drySeedBody.appendChild(drySeedRow);
+    document.getElementById('drySeedTotal').textContent = formatCurrency(drySeedTotal);
 
     // Dryland Crop Insurance
     const dryInsBody = document.getElementById('dryInsBody');
@@ -531,9 +570,10 @@ function calculate() {
 
     // Dryland Summary
     const dryChemTotal = dryPreChemTotal + dryPostChemTotal;
-    const drylandTotal = dryOpsTotal + dryRentTotal + dryInsTotal + dryChemTotal + dryFertTotal;
+    const drylandTotal = dryOpsTotal + dryRentTotal + drySeedTotal + dryInsTotal + dryChemTotal + dryFertTotal;
     document.getElementById('drySummaryOps').textContent = formatCurrency(dryOpsTotal);
     document.getElementById('drySummaryRent').textContent = formatCurrency(dryRentTotal);
+    document.getElementById('drySummarySeed').textContent = formatCurrency(drySeedTotal);
     document.getElementById('drySummaryIns').textContent = formatCurrency(dryInsTotal);
     document.getElementById('drySummaryChem').textContent = formatCurrency(dryChemTotal);
     document.getElementById('drySummaryFert').textContent = formatCurrency(dryFertTotal);
@@ -556,6 +596,10 @@ function calculate() {
     document.getElementById('combRentIrr').textContent = formatCurrency(irrRentTotal);
     document.getElementById('combRentDry').textContent = formatCurrency(dryRentTotal);
     document.getElementById('combRentTotal').textContent = formatCurrency(irrRentTotal + dryRentTotal);
+
+    document.getElementById('combSeedIrr').textContent = formatCurrency(irrSeedTotal);
+    document.getElementById('combSeedDry').textContent = formatCurrency(drySeedTotal);
+    document.getElementById('combSeedTotal').textContent = formatCurrency(irrSeedTotal + drySeedTotal);
 
     document.getElementById('combInsIrr').textContent = formatCurrency(irrInsTotal);
     document.getElementById('combInsDry').textContent = formatCurrency(dryInsTotal);
