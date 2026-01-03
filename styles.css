@@ -246,6 +246,17 @@ main {
     color: var(--primary-green);
 }
 
+.operations-table .program-header {
+    background: var(--bg-light);
+}
+
+.operations-table .program-header td {
+    padding: 8px 12px;
+    font-size: 0.95em;
+    color: var(--text-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
 /* Breakdown Grid */
 .breakdown-grid {
     display: grid;

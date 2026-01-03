@@ -99,20 +99,29 @@ const POST_CHEMICALS = [
 const POST_COST_PER_ACRE_IRR = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + WARRANT_COST + CHEM_APPLICATION_RATE;
 const POST_COST_PER_ACRE_DRY = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
 
-// Fertilizer - 220N-40P-25S
-const NITROGEN_COST = 220 * 0.58;         // $127.60
-const PHOSPHORUS_COST = 40 * 0.61;        // $24.40
-const SULFUR_COST = 25 * 0.38;            // $9.50
+// Fertilizer Programs - Irrigated vs Dryland
 const FERT_APPLICATION_RATE = 8.25;
 
-const FERTILIZER = [
-    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58, costPerAcre: NITROGEN_COST },
-    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61, costPerAcre: PHOSPHORUS_COST },
-    { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38, costPerAcre: SULFUR_COST }
+// Irrigated Fertilizer - 220N-40P-25S-1Zn + Micros
+const FERT_IRRIGATED = [
+    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58, costPerAcre: 220 * 0.58 },
+    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61, costPerAcre: 40 * 0.61 },
+    { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38, costPerAcre: 25 * 0.38 },
+    { nutrient: 'Zinc (Zn)', lbsPerAcre: 1, pricePerLb: 4.50, costPerAcre: 1 * 4.50 },
+    { nutrient: 'Micronutrient Package', lbsPerAcre: 1, pricePerLb: 8.00, costPerAcre: 1 * 8.00 }
+];
+
+// Dryland Fertilizer - 100N-20P-15S-0.5Zn
+const FERT_DRYLAND = [
+    { nutrient: 'Nitrogen (N)', lbsPerAcre: 100, pricePerLb: 0.58, costPerAcre: 100 * 0.58 },
+    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 20, pricePerLb: 0.61, costPerAcre: 20 * 0.61 },
+    { nutrient: 'Sulfur (S)', lbsPerAcre: 15, pricePerLb: 0.38, costPerAcre: 15 * 0.38 },
+    { nutrient: 'Zinc (Zn)', lbsPerAcre: 0.5, pricePerLb: 4.50, costPerAcre: 0.5 * 4.50 }
 ];
 
 // Pre-calculated cost per acre for Fertilizer (including application)
-const FERT_COST_PER_ACRE = NITROGEN_COST + PHOSPHORUS_COST + SULFUR_COST + FERT_APPLICATION_RATE;
+const FERT_COST_PER_ACRE_IRR = (220 * 0.58) + (40 * 0.61) + (25 * 0.38) + (1 * 4.50) + (1 * 8.00) + FERT_APPLICATION_RATE;  // $182.25
+const FERT_COST_PER_ACRE_DRY = (100 * 0.58) + (20 * 0.61) + (15 * 0.38) + (0.5 * 4.50) + FERT_APPLICATION_RATE;  // $84.20
 
 // Expected yields (bu/acre)
 const IRRIGATED_YIELD = 240;
@@ -434,19 +443,43 @@ function calculate() {
     const totalChemCost = chemIrrigatedTotal + chemDrylandTotal;
 
     // ============================================
-    // FERTILIZER COSTS
+    // FERTILIZER COSTS - Separate Irrigated & Dryland Programs
     // ============================================
     let fertIrrigatedTotal = 0;
     let fertDrylandTotal = 0;
     const fertilizerBody = document.getElementById('fertilizerBody');
     fertilizerBody.innerHTML = '';
 
-    FERTILIZER.forEach(fert => {
-        const costPerAcre = fert.lbsPerAcre * fert.pricePerLb;
-        const irrigatedCost = costPerAcre * irrigatedAcres;
-        const drylandCost = costPerAcre * drylandAcres;
+    // Irrigated Fertilizer Program (220N-40P-25S)
+    const irrHeaderRow = document.createElement('tr');
+    irrHeaderRow.className = 'program-header';
+    irrHeaderRow.innerHTML = `<td colspan="6"><strong>Irrigated Program (220N-40P-25S)</strong></td>`;
+    fertilizerBody.appendChild(irrHeaderRow);
 
+    FERT_IRRIGATED.forEach(fert => {
+        const irrigatedCost = fert.costPerAcre * irrigatedAcres;
         fertIrrigatedTotal += irrigatedCost;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${fert.nutrient}</td>
+            <td>${fert.lbsPerAcre}</td>
+            <td>${formatCurrencyDecimal(fert.pricePerLb)}</td>
+            <td>${formatCurrencyDecimal(fert.costPerAcre)}</td>
+            <td>${formatCurrency(irrigatedCost)}</td>
+            <td>-</td>
+        `;
+        fertilizerBody.appendChild(row);
+    });
+
+    // Dryland Fertilizer Program (100N-20P-15S-0.5Zn)
+    const dryHeaderRow = document.createElement('tr');
+    dryHeaderRow.className = 'program-header';
+    dryHeaderRow.innerHTML = `<td colspan="6"><strong>Dryland Program (100N-20P-15S-0.5Zn)</strong></td>`;
+    fertilizerBody.appendChild(dryHeaderRow);
+
+    FERT_DRYLAND.forEach(fert => {
+        const drylandCost = fert.costPerAcre * drylandAcres;
         fertDrylandTotal += drylandCost;
 
         const row = document.createElement('tr');
@@ -454,8 +487,8 @@ function calculate() {
             <td>${fert.nutrient}</td>
             <td>${fert.lbsPerAcre}</td>
             <td>${formatCurrencyDecimal(fert.pricePerLb)}</td>
-            <td>${formatCurrencyDecimal(costPerAcre)}</td>
-            <td>${formatCurrency(irrigatedCost)}</td>
+            <td>${formatCurrencyDecimal(fert.costPerAcre)}</td>
+            <td>-</td>
             <td>${formatCurrency(drylandCost)}</td>
         `;
         fertilizerBody.appendChild(row);
@@ -483,8 +516,9 @@ function calculate() {
     document.getElementById('fertDrylandTotal').textContent = formatCurrency(fertDrylandTotal);
     document.getElementById('fertTotal').textContent = formatCurrency(fertTotal);
 
-    // Fertilizer cost per acre (same for irrigated and dryland)
-    document.getElementById('fertCostPerAcre').textContent = formatCurrencyDecimal(FERT_COST_PER_ACRE);
+    // Fertilizer cost per acre (different for irrigated vs dryland)
+    document.getElementById('fertCostPerAcreIrr').textContent = formatCurrencyDecimal(FERT_COST_PER_ACRE_IRR);
+    document.getElementById('fertCostPerAcreDry').textContent = formatCurrencyDecimal(FERT_COST_PER_ACRE_DRY);
 
     // ============================================
     // TOTAL EXPENSES
