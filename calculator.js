@@ -280,6 +280,10 @@ function calculate() {
     document.getElementById('preDrylandTotal').textContent = formatCurrency(preDrylandTotal);
     document.getElementById('preChemTotal').textContent = formatCurrency(preTotal);
 
+    // Pre-emergence cost per acre (same for irrigated and dryland)
+    const preCostPerAcre = PRE_CHEMICALS.reduce((sum, chem) => sum + chem.costPerAcre, 0) + CHEM_APPLICATION_RATE;
+    document.getElementById('preCostPerAcre').textContent = formatCurrencyDecimal(preCostPerAcre);
+
     // ============================================
     // POST-EMERGENCE CHEMICALS
     // ============================================
@@ -337,6 +341,12 @@ function calculate() {
     document.getElementById('postDrylandTotal').textContent = formatCurrency(postDrylandTotal);
     document.getElementById('postChemTotal').textContent = formatCurrency(postTotal);
 
+    // Post-emergence cost per acre (different for irrigated vs dryland due to Warrant)
+    const postCostPerAcreIrr = POST_CHEMICALS.reduce((sum, chem) => sum + chem.costPerAcre, 0) + CHEM_APPLICATION_RATE;
+    const postCostPerAcreDry = POST_CHEMICALS.filter(c => !c.irrigatedOnly).reduce((sum, chem) => sum + chem.costPerAcre, 0) + CHEM_APPLICATION_RATE;
+    document.getElementById('postCostPerAcreIrr').textContent = formatCurrencyDecimal(postCostPerAcreIrr);
+    document.getElementById('postCostPerAcreDry').textContent = formatCurrencyDecimal(postCostPerAcreDry);
+
     // Combined chemical totals
     const chemIrrigatedTotal = preIrrigatedTotal + postIrrigatedTotal;
     const chemDrylandTotal = preDrylandTotal + postDrylandTotal;
@@ -391,6 +401,10 @@ function calculate() {
     document.getElementById('fertIrrigatedTotal').textContent = formatCurrency(fertIrrigatedTotal);
     document.getElementById('fertDrylandTotal').textContent = formatCurrency(fertDrylandTotal);
     document.getElementById('fertTotal').textContent = formatCurrency(fertTotal);
+
+    // Fertilizer cost per acre (same for irrigated and dryland)
+    const fertCostPerAcre = FERTILIZER.reduce((sum, fert) => sum + (fert.lbsPerAcre * fert.pricePerLb), 0) + FERT_APPLICATION_RATE;
+    document.getElementById('fertCostPerAcre').textContent = formatCurrencyDecimal(fertCostPerAcre);
 
     // ============================================
     // TOTAL EXPENSES

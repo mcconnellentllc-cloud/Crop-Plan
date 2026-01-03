@@ -223,6 +223,18 @@ main {
     border-top: 2px solid var(--primary-green);
 }
 
+.operations-table .cost-per-acre-row {
+    background: #e8f4e8;
+    font-weight: bold;
+}
+
+.operations-table .cost-per-acre-row td {
+    text-align: center;
+    padding: 12px;
+    font-size: 1.05em;
+    color: var(--primary-green);
+}
+
 /* Breakdown Grid */
 .breakdown-grid {
     display: grid;
