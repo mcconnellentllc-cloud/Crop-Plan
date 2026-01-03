@@ -121,26 +121,26 @@ const POST_COST_PER_ACRE_DRY = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + METO
 // Fertilizer Programs - Irrigated vs Dryland
 const FERT_APPLICATION_RATE = 8.25;
 
-// Irrigated Fertilizer - 220N-40P-25S-1Zn + Micros
+// Irrigated Fertilizer - 220N-40P-25S-1Zn + Micros (UAN32 @ $0.73/lb N)
 const FERT_IRRIGATED = [
-    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58, costPerAcre: 220 * 0.58 },
+    { nutrient: 'Nitrogen (N) - UAN32', lbsPerAcre: 220, pricePerLb: 0.73, costPerAcre: 220 * 0.73 },
     { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61, costPerAcre: 40 * 0.61 },
     { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38, costPerAcre: 25 * 0.38 },
     { nutrient: 'Zinc (Zn)', lbsPerAcre: 1, pricePerLb: 4.50, costPerAcre: 1 * 4.50 },
     { nutrient: 'Micronutrient Package', lbsPerAcre: 1, pricePerLb: 8.00, costPerAcre: 1 * 8.00 }
 ];
 
-// Dryland Fertilizer - 80N-20P-15S-0.5Zn
+// Dryland Fertilizer - 80N-20P-15S-0.5Zn (UAN32 @ $0.73/lb N)
 const FERT_DRYLAND = [
-    { nutrient: 'Nitrogen (N)', lbsPerAcre: 80, pricePerLb: 0.58, costPerAcre: 80 * 0.58 },
+    { nutrient: 'Nitrogen (N) - UAN32', lbsPerAcre: 80, pricePerLb: 0.73, costPerAcre: 80 * 0.73 },
     { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 20, pricePerLb: 0.61, costPerAcre: 20 * 0.61 },
     { nutrient: 'Sulfur (S)', lbsPerAcre: 15, pricePerLb: 0.38, costPerAcre: 15 * 0.38 },
     { nutrient: 'Zinc (Zn)', lbsPerAcre: 0.5, pricePerLb: 4.50, costPerAcre: 0.5 * 4.50 }
 ];
 
 // Pre-calculated cost per acre for Fertilizer (including application)
-const FERT_COST_PER_ACRE_IRR = (220 * 0.58) + (40 * 0.61) + (25 * 0.38) + (1 * 4.50) + (1 * 8.00) + FERT_APPLICATION_RATE;
-const FERT_COST_PER_ACRE_DRY = (80 * 0.58) + (20 * 0.61) + (15 * 0.38) + (0.5 * 4.50) + FERT_APPLICATION_RATE;
+const FERT_COST_PER_ACRE_IRR = (220 * 0.73) + (40 * 0.61) + (25 * 0.38) + (1 * 4.50) + (1 * 8.00) + FERT_APPLICATION_RATE;
+const FERT_COST_PER_ACRE_DRY = (80 * 0.73) + (20 * 0.61) + (15 * 0.38) + (0.5 * 4.50) + FERT_APPLICATION_RATE;
 
 // Expected yields (bu/acre)
 const IRRIGATED_YIELD = 240;
