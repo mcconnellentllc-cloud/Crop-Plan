@@ -202,6 +202,17 @@ main {
     outline: none;
 }
 
+/* Highlight corn price input */
+.config-item.price-input input {
+    border-color: var(--accent-gold);
+    background: #fffbf0;
+}
+
+.config-item.price-input label {
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
 /* Summary Grid */
 .summary-grid {
     display: grid;
