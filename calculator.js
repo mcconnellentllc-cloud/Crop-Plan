@@ -22,37 +22,14 @@ const OPERATIONS = [
 const HAUL_DISTANCE_ONE_WAY = 22;  // miles
 const HAUL_RATE_PER_BUSHEL = 0.18; // $/bu for ~22 mile haul - Range: $0.12-0.20, 75% = $0.18
 
-// Chemical Program - 3 Pass System
+// Chemical Program - 2 Pass System
 // Application cost per pass ($/acre)
 const CHEM_APPLICATION_RATE = 9.75;  // Range: $8-11, 75% = $9.75
 
 // Chemical Products ($/acre for product only)
-// Economical NE Colorado program with glyphosate burndown
+// Economical NE Colorado 2-pass program
 const CHEMICALS = [
-    // === PASS 1: Burndown/Pre-emergence ===
-    {
-        name: 'Glyphosate 41% (Generic)',
-        pass: 'Burndown',
-        ratePerAcre: 32,  // oz/acre (1 qt)
-        unit: 'oz',
-        costPerUnit: 0.12,  // ~$15/gal = $0.12/oz
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'AMS (Ammonium Sulfate)',
-        pass: 'Burndown',
-        ratePerAcre: 2.5,  // lbs/acre
-        unit: 'lb',
-        costPerUnit: 0.35,  // ~$17.50/50lb bag
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'NIS (Non-Ionic Surfactant)',
-        pass: 'Burndown',
-        ratePerAcre: 0.25,  // % v/v = ~4 oz/acre at 15 GPA
-        unit: '% v/v',
-        costPerAcre: 0.85   // flat rate per acre
-    },
+    // === PASS 1: Pre-emergence ===
     {
         name: 'Valor SX (flumioxazin)',
         pass: 'Pre',
@@ -77,13 +54,13 @@ const CHEMICALS = [
         costPerUnit: 8.50,
         get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
     },
-    // === PASS 3: Post-emergence ===
+    // === PASS 2: Post-emergence ===
     {
         name: 'Glyphosate 41% (Generic)',
         pass: 'Post',
-        ratePerAcre: 32,  // oz/acre
+        ratePerAcre: 32,  // oz/acre (1 qt)
         unit: 'oz',
-        costPerUnit: 0.12,
+        costPerUnit: 0.12,  // ~$15/gal = $0.12/oz
         get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
     },
     {
@@ -91,7 +68,7 @@ const CHEMICALS = [
         pass: 'Post',
         ratePerAcre: 2.5,  // lbs/acre
         unit: 'lb',
-        costPerUnit: 0.35,
+        costPerUnit: 0.35,  // ~$17.50/50lb bag
         get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
     },
     {
