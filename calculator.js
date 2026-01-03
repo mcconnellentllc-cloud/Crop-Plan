@@ -25,8 +25,8 @@ const HAUL_RATE_PER_BUSHEL = 0.18;
 // LAND RENTAL - NE Colorado Average Rates
 // ============================================
 const LAND_RENTAL = {
-    irrigated: { name: 'Irrigated Land Rent', costPerAcre: 300.00 },
-    dryland: { name: 'Dryland Land Rent', costPerAcre: 75.00 }
+    irrigated: { name: 'Irrigated Land Rent', costPerAcre: 225.00 },
+    dryland: { name: 'Dryland Land Rent', costPerAcre: 45.00 }
 };
 
 // ============================================
