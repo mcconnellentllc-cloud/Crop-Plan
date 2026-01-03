@@ -10,9 +10,17 @@
 // ============================================
 
 // Field Operations ($/acre) - 75% of rate range
-const OPERATIONS = [
+// Irrigated includes tillage (disk, strip till)
+const OPERATIONS_IRRIGATED = [
     { name: 'Disk (Tandem)', passes: 2, rate: 14.50 },
     { name: 'Strip Till', passes: 1, rate: 18.75 },
+    { name: 'Plant (Corn)', passes: 1, rate: 22.50 },
+    { name: 'Combine (Corn)', passes: 1, rate: 41.25 },
+    { name: 'Grain Cart', passes: 1, rate: 5.50 }
+];
+
+// Dryland - no tillage (no-till)
+const OPERATIONS_DRYLAND = [
     { name: 'Plant (Corn)', passes: 1, rate: 22.50 },
     { name: 'Combine (Corn)', passes: 1, rate: 41.25 },
     { name: 'Grain Cart', passes: 1, rate: 5.50 }
@@ -194,7 +202,7 @@ function calculate() {
     // Irrigated Field Operations
     const irrOpsBody = document.getElementById('irrOpsBody');
     irrOpsBody.innerHTML = '';
-    OPERATIONS.forEach(op => {
+    OPERATIONS_IRRIGATED.forEach(op => {
         const cost = op.rate * op.passes * irrigatedAcres;
         irrOpsTotal += cost;
         const row = document.createElement('tr');
@@ -375,10 +383,10 @@ function calculate() {
     let dryPostChemTotal = 0;
     let dryFertTotal = 0;
 
-    // Dryland Field Operations
+    // Dryland Field Operations (no-till - no disk or strip till)
     const dryOpsBody = document.getElementById('dryOpsBody');
     dryOpsBody.innerHTML = '';
-    OPERATIONS.forEach(op => {
+    OPERATIONS_DRYLAND.forEach(op => {
         const cost = op.rate * op.passes * drylandAcres;
         dryOpsTotal += cost;
         const row = document.createElement('tr');
