@@ -64,7 +64,7 @@ const CROP_INSURANCE = {
 // IRRIGATION COSTS (Irrigated Only)
 // ============================================
 const IRRIGATION_COSTS = [
-    { name: 'Well Electricity', details: '~15 acre-in @ $22/acre-in', costPerAcre: 330.00 },
+    { name: 'Well Electricity', details: 'Season total', costPerAcre: 127.00 },
     { name: 'Well Maintenance', details: 'Annual allowance', costPerAcre: 18.00 }
 ];
 
