@@ -15,6 +15,11 @@
     </header>
 
     <main class="container">
+        <!-- Disclaimer Note -->
+        <div class="disclaimer-note">
+            <strong>Note:</strong> All figures shown are estimates based on current market data and regional averages. Actual costs may vary. Numbers can be adjusted when final pricing is confirmed.
+        </div>
+
         <!-- Summary Cards -->
         <section class="summary-cards">
             <div class="card summary-card">
@@ -159,6 +164,35 @@
             </table>
         </section>
 
+        <!-- Crop Insurance -->
+        <section class="card expense-card">
+            <h2>Crop Insurance</h2>
+            <p class="section-note">RCIS Multi-Peril (MPCI/RP) and Hail coverage</p>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Coverage Type</th>
+                        <th>Details</th>
+                        <th>Premium/Acre</th>
+                        <th>Irrigated Cost</th>
+                        <th>Dryland Cost</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="insuranceBody">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Insurance Subtotal</strong></td>
+                        <td id="insIrrigatedTotal">$0</td>
+                        <td id="insDrylandTotal">$0</td>
+                        <td id="insTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
         <!-- Pre-Emergence Chemical Program -->
         <section class="card expense-card">
             <h2>Pre-Emergence Chemical Program</h2>
@@ -273,6 +307,10 @@
                 <div class="breakdown-item">
                     <h4>Land Rental</h4>
                     <p class="breakdown-value" id="summaryRent">$0</p>
+                </div>
+                <div class="breakdown-item">
+                    <h4>Crop Insurance</h4>
+                    <p class="breakdown-value" id="summaryIns">$0</p>
                 </div>
                 <div class="breakdown-item">
                     <h4>Chemical Program</h4>

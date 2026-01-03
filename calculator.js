@@ -30,6 +30,20 @@ const LAND_RENTAL = {
 };
 
 // ============================================
+// CROP INSURANCE - RCIS
+// ============================================
+const CROP_INSURANCE = {
+    irrigated: [
+        { name: 'Multi-Peril (MPCI/RP)', details: 'RCIS - 75% coverage', costPerAcre: 32.00 },
+        { name: 'Hail Insurance', details: 'RCIS - $100/ac coverage', costPerAcre: 12.00 }
+    ],
+    dryland: [
+        { name: 'Multi-Peril (MPCI/RP)', details: 'RCIS - 75% coverage', costPerAcre: 18.00 },
+        { name: 'Hail Insurance', details: 'RCIS - $100/ac coverage', costPerAcre: 8.00 }
+    ]
+};
+
+// ============================================
 // IRRIGATION COSTS (Irrigated Only)
 // ============================================
 const IRRIGATION_COSTS = [
@@ -256,6 +270,53 @@ function calculate() {
     document.getElementById('rentTotal').textContent = formatCurrency(totalRentCost);
 
     // ============================================
+    // CROP INSURANCE
+    // ============================================
+    let insIrrigatedTotal = 0;
+    let insDrylandTotal = 0;
+    const insuranceBody = document.getElementById('insuranceBody');
+    insuranceBody.innerHTML = '';
+
+    // Irrigated insurance
+    CROP_INSURANCE.irrigated.forEach(ins => {
+        const cost = ins.costPerAcre * irrigatedAcres;
+        insIrrigatedTotal += cost;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${ins.name} (Irrigated)</td>
+            <td>${ins.details}</td>
+            <td>${formatCurrencyDecimal(ins.costPerAcre)}</td>
+            <td>${formatCurrency(cost)}</td>
+            <td>$0</td>
+            <td>${formatCurrency(cost)}</td>
+        `;
+        insuranceBody.appendChild(row);
+    });
+
+    // Dryland insurance
+    CROP_INSURANCE.dryland.forEach(ins => {
+        const cost = ins.costPerAcre * drylandAcres;
+        insDrylandTotal += cost;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${ins.name} (Dryland)</td>
+            <td>${ins.details}</td>
+            <td>${formatCurrencyDecimal(ins.costPerAcre)}</td>
+            <td>$0</td>
+            <td>${formatCurrency(cost)}</td>
+            <td>${formatCurrency(cost)}</td>
+        `;
+        insuranceBody.appendChild(row);
+    });
+
+    const totalInsuranceCost = insIrrigatedTotal + insDrylandTotal;
+    document.getElementById('insIrrigatedTotal').textContent = formatCurrency(insIrrigatedTotal);
+    document.getElementById('insDrylandTotal').textContent = formatCurrency(insDrylandTotal);
+    document.getElementById('insTotal').textContent = formatCurrency(totalInsuranceCost);
+
+    // ============================================
     // PRE-EMERGENCE CHEMICALS
     // ============================================
     let preIrrigatedTotal = 0;
@@ -428,8 +489,8 @@ function calculate() {
     // ============================================
     // TOTAL EXPENSES
     // ============================================
-    const irrigatedTotal = opsIrrigatedTotal + irrIrrigatedTotal + irrigatedRentCost + chemIrrigatedTotal + fertIrrigatedTotal;
-    const drylandTotal = opsDrylandTotal + drylandRentCost + chemDrylandTotal + fertDrylandTotal;
+    const irrigatedTotal = opsIrrigatedTotal + irrIrrigatedTotal + irrigatedRentCost + insIrrigatedTotal + chemIrrigatedTotal + fertIrrigatedTotal;
+    const drylandTotal = opsDrylandTotal + drylandRentCost + insDrylandTotal + chemDrylandTotal + fertDrylandTotal;
     const grandTotal = irrigatedTotal + drylandTotal;
 
     // Update summary cards
@@ -450,6 +511,7 @@ function calculate() {
     document.getElementById('summaryOps').textContent = formatCurrency(opsTotal);
     document.getElementById('summaryIrr').textContent = formatCurrency(irrIrrigatedTotal);
     document.getElementById('summaryRent').textContent = formatCurrency(totalRentCost);
+    document.getElementById('summaryIns').textContent = formatCurrency(totalInsuranceCost);
     document.getElementById('summaryChem').textContent = formatCurrency(totalChemCost - (preAppIrrigated + preAppDryland + postAppIrrigated + postAppDryland));
     document.getElementById('summaryFert').textContent = formatCurrency(fertTotal - fertAppIrrigated - fertAppDryland);
     document.getElementById('summaryApp').textContent = formatCurrency(totalAppCost);
