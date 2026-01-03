@@ -9,7 +9,7 @@
 <body>
     <header>
         <div class="container">
-            <h1>🌽 2025 Crop Planner</h1>
+            <h1>2025 Crop Planner</h1>
             <p class="subtitle">CSU/Iowa State Extension Rates @ 75% Spread</p>
         </div>
     </header>
@@ -22,13 +22,13 @@
                 <div class="big-number" id="totalAcres">960</div>
                 <p>Irrigated: 360 | Dryland: 600</p>
             </div>
-            <div class="card summary-card">
-                <h3>Total Cost</h3>
+            <div class="card summary-card expense">
+                <h3>Total Expenses</h3>
                 <div class="big-number" id="totalCost">$0</div>
-                <p>All operations included</p>
+                <p>All costs included</p>
             </div>
             <div class="card summary-card">
-                <h3>Cost Per Acre</h3>
+                <h3>Avg Cost/Acre</h3>
                 <div class="big-number" id="costPerAcre">$0</div>
                 <p>Weighted average</p>
             </div>
@@ -36,7 +36,7 @@
 
         <!-- Crop Configuration -->
         <section class="card">
-            <h2>📊 Crop Configuration</h2>
+            <h2>Crop Configuration</h2>
             <div class="crop-grid">
                 <div class="crop-item irrigated">
                     <h3>Irrigated Corn</h3>
@@ -45,7 +45,7 @@
                         <input type="number" id="irrigatedAcres" value="360" min="0" onchange="calculate()">
                     </div>
                     <div class="crop-stats">
-                        <p>Expected Yield: <span id="irrigatedYield">220</span> bu/ac</p>
+                        <p>Expected Yield: <span id="irrigatedYield">240</span> bu/ac</p>
                         <p>Cost/Acre: <span id="irrigatedCostPerAcre">$0</span></p>
                         <p>Total Cost: <span id="irrigatedTotalCost">$0</span></p>
                     </div>
@@ -57,7 +57,7 @@
                         <input type="number" id="drylandAcres" value="600" min="0" onchange="calculate()">
                     </div>
                     <div class="crop-stats">
-                        <p>Expected Yield: <span id="drylandYield">140</span> bu/ac</p>
+                        <p>Expected Yield: <span id="drylandYield">90</span> bu/ac</p>
                         <p>Cost/Acre: <span id="drylandCostPerAcre">$0</span></p>
                         <p>Total Cost: <span id="drylandTotalCost">$0</span></p>
                     </div>
@@ -65,9 +65,16 @@
             </div>
         </section>
 
+        <!-- ============================================ -->
+        <!-- EXPENSES SECTION -->
+        <!-- ============================================ -->
+        <div class="section-header expense-header">
+            <h2>EXPENSES</h2>
+        </div>
+
         <!-- Field Operations -->
-        <section class="card">
-            <h2>🚜 Field Operations</h2>
+        <section class="card expense-card">
+            <h2>Field Operations</h2>
             <p class="section-note">CSU/Iowa State rates at 75% of range spread</p>
             <table class="operations-table">
                 <thead>
@@ -94,10 +101,39 @@
             </table>
         </section>
 
+        <!-- Irrigation Costs (Irrigated Only) -->
+        <section class="card expense-card">
+            <h2>Irrigation Costs (Irrigated Only)</h2>
+            <p class="section-note">Well electricity and maintenance - applies to irrigated acres only</p>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Details</th>
+                        <th>Cost/Acre</th>
+                        <th>Irrigated Cost</th>
+                        <th>Dryland Cost</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="irrigationBody">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Irrigation Subtotal</strong></td>
+                        <td id="irrIrrigatedTotal">$0</td>
+                        <td id="irrDrylandTotal">$0</td>
+                        <td id="irrTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
         <!-- Chemical Program -->
-        <section class="card">
-            <h2>🧪 3-Pass Chemical Program</h2>
-            <p class="section-note">Pre-emergence + Post-emergence applications</p>
+        <section class="card expense-card">
+            <h2>2-Pass Chemical Program</h2>
+            <p class="section-note">Pre-emergence + Post-emergence applications @ 12 GPA</p>
             <table class="operations-table">
                 <thead>
                     <tr>
@@ -121,8 +157,8 @@
         </section>
 
         <!-- Fertilizer Program -->
-        <section class="card">
-            <h2>🌱 Fertilizer Program (220N-40P-25S)</h2>
+        <section class="card expense-card">
+            <h2>Fertilizer Program (220N-40P-25S)</h2>
             <p class="section-note">Based on soil test recommendations</p>
             <table class="operations-table">
                 <thead>
@@ -152,13 +188,17 @@
             </table>
         </section>
 
-        <!-- Cost Breakdown -->
-        <section class="card">
-            <h2>💰 Cost Breakdown Summary</h2>
+        <!-- Total Expenses Summary -->
+        <section class="card expense-summary">
+            <h2>TOTAL EXPENSES SUMMARY</h2>
             <div class="breakdown-grid">
                 <div class="breakdown-item">
                     <h4>Field Operations</h4>
                     <p class="breakdown-value" id="summaryOps">$0</p>
+                </div>
+                <div class="breakdown-item">
+                    <h4>Irrigation</h4>
+                    <p class="breakdown-value" id="summaryIrr">$0</p>
                 </div>
                 <div class="breakdown-item">
                     <h4>Chemical Program</h4>
@@ -173,37 +213,75 @@
                     <p class="breakdown-value" id="summaryApp">$0</p>
                 </div>
             </div>
-            <div class="grand-total">
-                <h3>Grand Total: <span id="grandTotal">$0</span></h3>
-                <p>Irrigated: <span id="grandIrrigated">$0</span> | Dryland: <span id="grandDryland">$0</span></p>
+            <div class="grand-total expense-total">
+                <h3>TOTAL EXPENSES: <span id="grandTotal">$0</span></h3>
+                <p>Irrigated: <span id="grandIrrigated">$0</span> (<span id="irrigatedPerAcreExp">$0</span>/ac) | Dryland: <span id="grandDryland">$0</span> (<span id="drylandPerAcreExp">$0</span>/ac)</p>
             </div>
         </section>
 
+        <!-- ============================================ -->
+        <!-- REVENUE & PROFIT SECTION -->
+        <!-- ============================================ -->
+        <div class="section-header profit-header">
+            <h2>REVENUE & PROFIT</h2>
+        </div>
+
         <!-- Profit Analysis -->
-        <section class="card">
-            <h2>📈 Profit Analysis</h2>
+        <section class="card profit-card">
+            <h2>Profit Analysis</h2>
             <div class="input-group inline">
                 <label for="cornPrice">Corn Price ($/bu):</label>
                 <input type="number" id="cornPrice" value="4.50" step="0.05" onchange="calculate()">
             </div>
-            <div class="profit-grid">
-                <div class="profit-item irrigated">
-                    <h4>Irrigated Corn</h4>
-                    <p>Gross Revenue: <span id="irrigatedRevenue">$0</span></p>
-                    <p>Net Return: <span id="irrigatedNet">$0</span></p>
-                    <p>Return/Acre: <span id="irrigatedReturn">$0</span></p>
-                </div>
-                <div class="profit-item dryland">
-                    <h4>Dryland Corn</h4>
-                    <p>Gross Revenue: <span id="drylandRevenue">$0</span></p>
-                    <p>Net Return: <span id="drylandNet">$0</span></p>
-                    <p>Return/Acre: <span id="drylandReturn">$0</span></p>
-                </div>
-                <div class="profit-item total">
-                    <h4>Combined</h4>
-                    <p>Total Revenue: <span id="totalRevenue">$0</span></p>
-                    <p>Total Net: <span id="totalNet">$0</span></p>
-                    <p>Avg Return/Acre: <span id="avgReturn">$0</span></p>
+
+            <table class="operations-table profit-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Irrigated (360 ac)</th>
+                        <th>Dryland (600 ac)</th>
+                        <th>Combined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Expected Production</strong></td>
+                        <td id="irrigatedBushels">0 bu</td>
+                        <td id="drylandBushels">0 bu</td>
+                        <td id="totalBushels">0 bu</td>
+                    </tr>
+                    <tr class="revenue-row">
+                        <td><strong>Gross Revenue</strong></td>
+                        <td id="irrigatedRevenue">$0</td>
+                        <td id="drylandRevenue">$0</td>
+                        <td id="totalRevenue">$0</td>
+                    </tr>
+                    <tr class="expense-row">
+                        <td><strong>Total Expenses</strong></td>
+                        <td id="irrigatedExpenses">$0</td>
+                        <td id="drylandExpenses">$0</td>
+                        <td id="totalExpenses">$0</td>
+                    </tr>
+                    <tr class="profit-row">
+                        <td><strong>NET PROFIT/LOSS</strong></td>
+                        <td id="irrigatedNet">$0</td>
+                        <td id="drylandNet">$0</td>
+                        <td id="totalNet">$0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Return Per Acre</strong></td>
+                        <td id="irrigatedReturn">$0</td>
+                        <td id="drylandReturn">$0</td>
+                        <td id="avgReturn">$0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="profit-summary">
+                <div class="profit-box positive" id="profitBox">
+                    <h3>NET PROFIT</h3>
+                    <div class="profit-amount" id="netProfitDisplay">$0</div>
+                    <p id="profitPerAcre">$0/acre average</p>
                 </div>
             </div>
         </section>

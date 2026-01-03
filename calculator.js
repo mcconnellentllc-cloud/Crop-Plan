@@ -22,6 +22,22 @@ const OPERATIONS = [
 const HAUL_DISTANCE_ONE_WAY = 22;  // miles
 const HAUL_RATE_PER_BUSHEL = 0.18; // $/bu for ~22 mile haul - Range: $0.12-0.20, 75% = $0.18
 
+// ============================================
+// IRRIGATION COSTS (Irrigated Only)
+// ============================================
+const IRRIGATION_COSTS = [
+    {
+        name: 'Well Electricity',
+        details: '~15 acre-in @ $22/acre-in',
+        costPerAcre: 330.00  // Range: $250-380/ac for season, 75% = $330
+    },
+    {
+        name: 'Well Maintenance',
+        details: 'Annual allowance',
+        costPerAcre: 18.00   // Range: $12-20/ac, 75% = $18
+    }
+];
+
 // Chemical Program - 2 Pass System
 // Application cost per pass ($/acre)
 const CHEM_APPLICATION_RATE = 9.75;  // Range: $8-11, 75% = $9.75
@@ -172,17 +188,24 @@ function formatCurrencyDecimal(amount) {
     }).format(amount);
 }
 
+function formatNumber(num) {
+    return new Intl.NumberFormat('en-US').format(num);
+}
+
 function calculate() {
     const irrigatedAcres = parseFloat(document.getElementById('irrigatedAcres').value) || 0;
     const drylandAcres = parseFloat(document.getElementById('drylandAcres').value) || 0;
     const totalAcres = irrigatedAcres + drylandAcres;
     const cornPrice = parseFloat(document.getElementById('cornPrice').value) || 4.50;
 
-    // Calculate bushels for hauling
+    // Calculate bushels for hauling and revenue
     const irrigatedBushels = irrigatedAcres * IRRIGATED_YIELD;
     const drylandBushels = drylandAcres * DRYLAND_YIELD;
+    const totalBushels = irrigatedBushels + drylandBushels;
 
-    // Calculate Operations
+    // ============================================
+    // FIELD OPERATIONS
+    // ============================================
     let opsIrrigatedTotal = 0;
     let opsDrylandTotal = 0;
     const operationsBody = document.getElementById('operationsBody');
@@ -232,7 +255,36 @@ function calculate() {
     document.getElementById('opsDrylandTotal').textContent = formatCurrency(opsDrylandTotal);
     document.getElementById('opsTotal').textContent = formatCurrency(opsTotal);
 
-    // Calculate Chemicals (with irrigated-only support)
+    // ============================================
+    // IRRIGATION COSTS (Irrigated Only)
+    // ============================================
+    let irrIrrigatedTotal = 0;
+    const irrigationBody = document.getElementById('irrigationBody');
+    irrigationBody.innerHTML = '';
+
+    IRRIGATION_COSTS.forEach(item => {
+        const irrigatedCost = item.costPerAcre * irrigatedAcres;
+        irrIrrigatedTotal += irrigatedCost;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.details}</td>
+            <td>${formatCurrencyDecimal(item.costPerAcre)}</td>
+            <td>${formatCurrency(irrigatedCost)}</td>
+            <td>$0</td>
+            <td>${formatCurrency(irrigatedCost)}</td>
+        `;
+        irrigationBody.appendChild(row);
+    });
+
+    document.getElementById('irrIrrigatedTotal').textContent = formatCurrency(irrIrrigatedTotal);
+    document.getElementById('irrDrylandTotal').textContent = '$0';
+    document.getElementById('irrTotal').textContent = formatCurrency(irrIrrigatedTotal);
+
+    // ============================================
+    // CHEMICAL COSTS
+    // ============================================
     let chemIrrigatedTotal = 0;
     let chemDrylandTotal = 0;
     const chemicalBody = document.getElementById('chemicalBody');
@@ -246,12 +298,10 @@ function calculate() {
         let irrigatedCost, drylandCost, productCost;
 
         if (chem.irrigatedOnly) {
-            // Only apply to irrigated acres
             irrigatedCost = chem.costPerAcre * irrigatedAcres;
             drylandCost = 0;
             productCost = irrigatedCost;
         } else {
-            // Apply to all acres
             irrigatedCost = chem.costPerAcre * irrigatedAcres;
             drylandCost = chem.costPerAcre * drylandAcres;
             productCost = irrigatedCost + drylandCost;
@@ -293,7 +343,9 @@ function calculate() {
     const totalChemCost = chemIrrigatedTotal + chemDrylandTotal;
     document.getElementById('chemTotal').textContent = formatCurrency(totalChemCost);
 
-    // Calculate Fertilizer
+    // ============================================
+    // FERTILIZER COSTS
+    // ============================================
     let fertCostPerAcre = 0;
     let fertIrrigatedTotal = 0;
     let fertDrylandTotal = 0;
@@ -321,7 +373,7 @@ function calculate() {
         fertilizerBody.appendChild(row);
     });
 
-    // Add application cost row
+    // Add fertilizer application cost
     const fertAppIrrigated = FERT_APPLICATION_RATE * irrigatedAcres;
     const fertAppDryland = FERT_APPLICATION_RATE * drylandAcres;
     fertIrrigatedTotal += fertAppIrrigated;
@@ -343,13 +395,14 @@ function calculate() {
     document.getElementById('fertDrylandTotal').textContent = formatCurrency(fertDrylandTotal);
     document.getElementById('fertTotal').textContent = formatCurrency(fertTotal);
 
-    // Calculate totals
-    const grandTotal = opsTotal + totalChemCost + fertTotal;
-
-    const irrigatedTotal = opsIrrigatedTotal + chemIrrigatedTotal + fertIrrigatedTotal;
+    // ============================================
+    // TOTAL EXPENSES
+    // ============================================
+    const irrigatedTotal = opsIrrigatedTotal + irrIrrigatedTotal + chemIrrigatedTotal + fertIrrigatedTotal;
     const drylandTotal = opsDrylandTotal + chemDrylandTotal + fertDrylandTotal;
+    const grandTotal = irrigatedTotal + drylandTotal;
 
-    // Update summary
+    // Update summary cards
     document.getElementById('totalAcres').textContent = totalAcres.toLocaleString();
     document.getElementById('totalCost').textContent = formatCurrency(grandTotal);
     document.getElementById('costPerAcre').textContent = formatCurrencyDecimal(totalAcres > 0 ? grandTotal / totalAcres : 0);
@@ -362,8 +415,9 @@ function calculate() {
     document.getElementById('irrigatedTotalCost').textContent = formatCurrency(irrigatedTotal);
     document.getElementById('drylandTotalCost').textContent = formatCurrency(drylandTotal);
 
-    // Update breakdown summary
+    // Update expense breakdown summary
     document.getElementById('summaryOps').textContent = formatCurrency(opsTotal);
+    document.getElementById('summaryIrr').textContent = formatCurrency(irrIrrigatedTotal);
     document.getElementById('summaryChem').textContent = formatCurrency(totalChemCost - applicationCost);
     document.getElementById('summaryFert').textContent = formatCurrency(fertTotal - (fertAppIrrigated + fertAppDryland));
     document.getElementById('summaryApp').textContent = formatCurrency(applicationCost + fertAppIrrigated + fertAppDryland);
@@ -371,29 +425,62 @@ function calculate() {
     document.getElementById('grandTotal').textContent = formatCurrency(grandTotal);
     document.getElementById('grandIrrigated').textContent = formatCurrency(irrigatedTotal);
     document.getElementById('grandDryland').textContent = formatCurrency(drylandTotal);
+    document.getElementById('irrigatedPerAcreExp').textContent = formatCurrencyDecimal(irrigatedAcres > 0 ? irrigatedTotal / irrigatedAcres : 0);
+    document.getElementById('drylandPerAcreExp').textContent = formatCurrencyDecimal(drylandAcres > 0 ? drylandTotal / drylandAcres : 0);
 
-    // Profit Analysis
-    const irrigatedRevenue = irrigatedAcres * IRRIGATED_YIELD * cornPrice;
-    const drylandRevenue = drylandAcres * DRYLAND_YIELD * cornPrice;
+    // ============================================
+    // REVENUE & PROFIT ANALYSIS
+    // ============================================
+    const irrigatedRevenue = irrigatedBushels * cornPrice;
+    const drylandRevenue = drylandBushels * cornPrice;
     const totalRevenue = irrigatedRevenue + drylandRevenue;
 
     const irrigatedNet = irrigatedRevenue - irrigatedTotal;
     const drylandNet = drylandRevenue - drylandTotal;
     const totalNet = totalRevenue - grandTotal;
 
+    // Update bushels
+    document.getElementById('irrigatedBushels').textContent = formatNumber(irrigatedBushels) + ' bu';
+    document.getElementById('drylandBushels').textContent = formatNumber(drylandBushels) + ' bu';
+    document.getElementById('totalBushels').textContent = formatNumber(totalBushels) + ' bu';
+
+    // Update revenue
     document.getElementById('irrigatedRevenue').textContent = formatCurrency(irrigatedRevenue);
-    document.getElementById('irrigatedNet').textContent = formatCurrency(irrigatedNet);
-    document.getElementById('irrigatedReturn').textContent = formatCurrencyDecimal(irrigatedAcres > 0 ? irrigatedNet / irrigatedAcres : 0);
-
     document.getElementById('drylandRevenue').textContent = formatCurrency(drylandRevenue);
-    document.getElementById('drylandNet').textContent = formatCurrency(drylandNet);
-    document.getElementById('drylandReturn').textContent = formatCurrencyDecimal(drylandAcres > 0 ? drylandNet / drylandAcres : 0);
-
     document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+
+    // Update expenses in profit table
+    document.getElementById('irrigatedExpenses').textContent = formatCurrency(irrigatedTotal);
+    document.getElementById('drylandExpenses').textContent = formatCurrency(drylandTotal);
+    document.getElementById('totalExpenses').textContent = formatCurrency(grandTotal);
+
+    // Update net profit
+    document.getElementById('irrigatedNet').textContent = formatCurrency(irrigatedNet);
+    document.getElementById('drylandNet').textContent = formatCurrency(drylandNet);
     document.getElementById('totalNet').textContent = formatCurrency(totalNet);
+
+    // Update returns per acre
+    document.getElementById('irrigatedReturn').textContent = formatCurrencyDecimal(irrigatedAcres > 0 ? irrigatedNet / irrigatedAcres : 0);
+    document.getElementById('drylandReturn').textContent = formatCurrencyDecimal(drylandAcres > 0 ? drylandNet / drylandAcres : 0);
     document.getElementById('avgReturn').textContent = formatCurrencyDecimal(totalAcres > 0 ? totalNet / totalAcres : 0);
 
-    // Color code net returns
+    // Update profit summary box
+    const profitBox = document.getElementById('profitBox');
+    const netProfitDisplay = document.getElementById('netProfitDisplay');
+    const profitPerAcre = document.getElementById('profitPerAcre');
+
+    netProfitDisplay.textContent = formatCurrency(totalNet);
+    profitPerAcre.textContent = formatCurrencyDecimal(totalAcres > 0 ? totalNet / totalAcres : 0) + '/acre average';
+
+    if (totalNet >= 0) {
+        profitBox.className = 'profit-box positive';
+        profitBox.querySelector('h3').textContent = 'NET PROFIT';
+    } else {
+        profitBox.className = 'profit-box negative';
+        profitBox.querySelector('h3').textContent = 'NET LOSS';
+    }
+
+    // Color code net returns in table
     styleNetReturn('irrigatedNet', irrigatedNet);
     styleNetReturn('drylandNet', drylandNet);
     styleNetReturn('totalNet', totalNet);
@@ -402,9 +489,9 @@ function calculate() {
 function styleNetReturn(elementId, value) {
     const element = document.getElementById(elementId);
     if (value >= 0) {
-        element.style.color = '#28a745';
+        element.style.color = '#27ae60';
     } else {
-        element.style.color = '#dc3545';
+        element.style.color = '#c0392b';
     }
 }
 

@@ -317,6 +317,127 @@ main {
     font-weight: bold;
 }
 
+/* Section Headers */
+.section-header {
+    padding: 15px 25px;
+    margin: 30px 0 20px 0;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.expense-header {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: white;
+}
+
+.profit-header {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+/* Expense Cards */
+.expense-card {
+    border-left: 4px solid #e74c3c;
+}
+
+.expense-summary {
+    border: 2px solid #e74c3c;
+}
+
+.expense-total {
+    background: linear-gradient(135deg, #c0392b, #e74c3c) !important;
+}
+
+/* Profit Cards */
+.profit-card {
+    border-left: 4px solid #27ae60;
+}
+
+/* Profit Table Rows */
+.profit-table .revenue-row {
+    background: rgba(39, 174, 96, 0.1);
+}
+
+.profit-table .revenue-row td {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.profit-table .expense-row {
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.profit-table .expense-row td {
+    color: #c0392b;
+    font-weight: bold;
+}
+
+.profit-table .profit-row {
+    background: rgba(52, 152, 219, 0.15);
+    font-size: 1.1rem;
+}
+
+.profit-table .profit-row td {
+    font-weight: bold;
+    padding: 15px;
+}
+
+/* Profit Summary Box */
+.profit-summary {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.profit-box {
+    display: inline-block;
+    padding: 25px 50px;
+    border-radius: 10px;
+    min-width: 300px;
+}
+
+.profit-box.positive {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.profit-box.negative {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: white;
+}
+
+.profit-box h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.profit-amount {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.profit-box p {
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+/* Summary Card Expense Style */
+.summary-card.expense {
+    border-top-color: #e74c3c;
+}
+
+.summary-card.expense .big-number {
+    color: #c0392b;
+}
+
 /* Footer */
 footer {
     background: var(--text-dark);
