@@ -9,158 +9,65 @@
 // ============================================
 
 // Field Operations ($/acre) - 75% of rate range
-// Range source: CSU/Iowa State Extension Custom Rate Surveys
 const OPERATIONS = [
-    { name: 'Disk (Tandem)', passes: 2, rate: 14.50 },      // Range: $12-16, 75% = $14.50
-    { name: 'Strip Till', passes: 1, rate: 18.75 },         // Range: $15-20, 75% = $18.75
-    { name: 'Plant (Corn)', passes: 1, rate: 22.50 },       // Range: $18-24, 75% = $22.50
-    { name: 'Combine (Corn)', passes: 1, rate: 41.25 },     // Range: $35-43, 75% = $41.25
-    { name: 'Grain Cart', passes: 1, rate: 5.50 }           // Range: $4-6, 75% = $5.50
+    { name: 'Disk (Tandem)', passes: 2, rate: 14.50 },
+    { name: 'Strip Till', passes: 1, rate: 18.75 },
+    { name: 'Plant (Corn)', passes: 1, rate: 22.50 },
+    { name: 'Combine (Corn)', passes: 1, rate: 41.25 },
+    { name: 'Grain Cart', passes: 1, rate: 5.50 }
 ];
 
 // Hauling Configuration - 22 miles one way
-const HAUL_DISTANCE_ONE_WAY = 22;  // miles
-const HAUL_RATE_PER_BUSHEL = 0.18; // $/bu for ~22 mile haul - Range: $0.12-0.20, 75% = $0.18
+const HAUL_DISTANCE_ONE_WAY = 22;
+const HAUL_RATE_PER_BUSHEL = 0.18;
 
 // ============================================
 // IRRIGATION COSTS (Irrigated Only)
 // ============================================
 const IRRIGATION_COSTS = [
-    {
-        name: 'Well Electricity',
-        details: '~15 acre-in @ $22/acre-in',
-        costPerAcre: 330.00  // Range: $250-380/ac for season, 75% = $330
-    },
-    {
-        name: 'Well Maintenance',
-        details: 'Annual allowance',
-        costPerAcre: 18.00   // Range: $12-20/ac, 75% = $18
-    }
+    { name: 'Well Electricity', details: '~15 acre-in @ $22/acre-in', costPerAcre: 330.00 },
+    { name: 'Well Maintenance', details: 'Annual allowance', costPerAcre: 18.00 }
 ];
 
-// Chemical Program - 2 Pass System
-// Application cost per pass ($/acre)
-const CHEM_APPLICATION_RATE = 9.75;  // Range: $8-11, 75% = $9.75
+// ============================================
+// CHEMICAL PROGRAM - Separate Pre & Post
+// ============================================
+const CHEM_APPLICATION_RATE = 8.00;  // $8/acre per application pass
 
 // Spray Configuration
-const SPRAY_RATE_GPA = 12;  // gallons per acre
-const HYDROVANT_RATE_PERCENT = 0.001;  // 0.1% = 1 gal per 1000 gal
+const SPRAY_RATE_GPA = 12;
+const HYDROVANT_RATE_PERCENT = 0.001;
 const HYDROVANT_COST_PER_GAL = 165.00;
-// Hydrovant cost: 12 GPA × 0.001 = 0.012 gal/ac × $165 = $1.98/ac
 const HYDROVANT_COST_PER_ACRE = SPRAY_RATE_GPA * HYDROVANT_RATE_PERCENT * HYDROVANT_COST_PER_GAL;
 
-// Chemical Products ($/acre for product only)
-// NE Colorado 2-pass program - irrigatedOnly: true means only applied to irrigated acres
-const CHEMICALS = [
-    // === PASS 1: Pre-emergence ===
-    {
-        name: 'Glyphosate 41% (Generic)',
-        pass: 'Pre',
-        ratePerAcre: 32,  // oz/acre (1 qt)
-        unit: 'oz',
-        costPerUnit: 0.12,  // ~$15/gal = $0.12/oz
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Valor SX (flumioxazin)',
-        pass: 'Pre',
-        ratePerAcre: 2.5,  // oz/acre
-        unit: 'oz',
-        costPerUnit: 4.20,
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Atrazine 4L',
-        pass: 'Pre',
-        ratePerAcre: 1.0,  // pt/acre
-        unit: 'pt',
-        costPerUnit: 1.95,  // ~$3.85/qt = $1.95/pt
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Metolachlor (Dual II Magnum)',
-        pass: 'Pre',
-        ratePerAcre: 1.33,  // pt/acre
-        unit: 'pt',
-        costPerUnit: 8.50,
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Fluroxypyr (Starane Ultra)',
-        pass: 'Pre',
-        ratePerAcre: 0.67,  // pt/acre (typical rate 0.5-1 pt)
-        unit: 'pt',
-        costPerUnit: 12.50,  // ~$100/gal = $12.50/pt
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Hydrovant (adjuvant)',
-        pass: 'Pre',
-        ratePerAcre: 0.1,  // % v/v at 12 GPA
-        unit: '% v/v',
-        costPerAcre: HYDROVANT_COST_PER_ACRE  // $1.98/ac
-    },
-    // === PASS 2: Post-emergence ===
-    {
-        name: 'Glyphosate 41% (Generic)',
-        pass: 'Post',
-        ratePerAcre: 32,  // oz/acre (1 qt)
-        unit: 'oz',
-        costPerUnit: 0.12,
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'AMS (Ammonium Sulfate)',
-        pass: 'Post',
-        ratePerAcre: 2.5,  // lbs/acre
-        unit: 'lb',
-        costPerUnit: 0.35,  // ~$17.50/50lb bag
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Atrazine 4L',
-        pass: 'Post',
-        ratePerAcre: 1.0,  // pt/acre
-        unit: 'pt',
-        costPerUnit: 1.95,
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'DiFlexx (dicamba)',
-        pass: 'Post',
-        ratePerAcre: 3.0,  // oz/acre - safened dicamba
-        unit: 'oz',
-        costPerUnit: 0.95,  // ~$12/gal = $0.95/oz
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    },
-    {
-        name: 'Hydrovant (adjuvant)',
-        pass: 'Post',
-        ratePerAcre: 0.1,  // % v/v at 12 GPA
-        unit: '% v/v',
-        costPerAcre: HYDROVANT_COST_PER_ACRE  // $1.98/ac
-    },
-    {
-        name: 'Acetochlor (Warrant)',
-        pass: 'Post',
-        ratePerAcre: 3.0,  // pt/acre - residual for late-season
-        unit: 'pt',
-        costPerUnit: 4.75,
-        irrigatedOnly: true,  // NOT applied to dryland
-        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
-    }
+// Pre-Emergence Chemicals
+const PRE_CHEMICALS = [
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerUnit: 0.12, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Valor SX (flumioxazin)', ratePerAcre: 2.5, unit: 'oz', costPerUnit: 4.20, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerUnit: 1.95, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerUnit: 8.50, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Fluroxypyr (Starane Ultra)', ratePerAcre: 0.67, unit: 'pt', costPerUnit: 12.50, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE }
+];
+
+// Post-Emergence Chemicals
+const POST_CHEMICALS = [
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerUnit: 0.12, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerUnit: 0.35, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerUnit: 1.95, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerUnit: 0.95, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE },
+    { name: 'Acetochlor (Warrant)', ratePerAcre: 3.0, unit: 'pt', costPerUnit: 4.75, irrigatedOnly: true, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } }
 ];
 
 // Fertilizer - 220N-40P-25S
-// Prices at 75% of typical range
 const FERTILIZER = [
-    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58 },    // Range: $0.45-0.62, 75% = $0.58
-    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61 }, // Range: $0.52-0.64, 75% = $0.61
-    { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38 }        // Range: $0.28-0.42, 75% = $0.38
+    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58 },
+    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61 },
+    { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38 }
 ];
 
-// Fertilizer application cost
-const FERT_APPLICATION_RATE = 8.25;  // $/acre - Range: $6-9, 75% = $8.25
+const FERT_APPLICATION_RATE = 8.25;
 
 // Expected yields (bu/acre)
 const IRRIGATED_YIELD = 240;
@@ -198,7 +105,6 @@ function calculate() {
     const totalAcres = irrigatedAcres + drylandAcres;
     const cornPrice = parseFloat(document.getElementById('cornPrice').value) || 4.50;
 
-    // Calculate bushels for hauling and revenue
     const irrigatedBushels = irrigatedAcres * IRRIGATED_YIELD;
     const drylandBushels = drylandAcres * DRYLAND_YIELD;
     const totalBushels = irrigatedBushels + drylandBushels;
@@ -231,11 +137,9 @@ function calculate() {
         operationsBody.appendChild(row);
     });
 
-    // Add Hauling (yield-dependent)
+    // Add Hauling
     const irrigatedHaulCost = irrigatedBushels * HAUL_RATE_PER_BUSHEL;
     const drylandHaulCost = drylandBushels * HAUL_RATE_PER_BUSHEL;
-    const totalHaulCost = irrigatedHaulCost + drylandHaulCost;
-
     opsIrrigatedTotal += irrigatedHaulCost;
     opsDrylandTotal += drylandHaulCost;
 
@@ -246,7 +150,7 @@ function calculate() {
         <td>${formatCurrencyDecimal(HAUL_RATE_PER_BUSHEL)}/bu</td>
         <td>${formatCurrency(irrigatedHaulCost)}</td>
         <td>${formatCurrency(drylandHaulCost)}</td>
-        <td>${formatCurrency(totalHaulCost)}</td>
+        <td>${formatCurrency(irrigatedHaulCost + drylandHaulCost)}</td>
     `;
     operationsBody.appendChild(haulRow);
 
@@ -256,7 +160,7 @@ function calculate() {
     document.getElementById('opsTotal').textContent = formatCurrency(opsTotal);
 
     // ============================================
-    // IRRIGATION COSTS (Irrigated Only)
+    // IRRIGATION COSTS
     // ============================================
     let irrIrrigatedTotal = 0;
     const irrigationBody = document.getElementById('irrigationBody');
@@ -283,70 +187,118 @@ function calculate() {
     document.getElementById('irrTotal').textContent = formatCurrency(irrIrrigatedTotal);
 
     // ============================================
-    // CHEMICAL COSTS
+    // PRE-EMERGENCE CHEMICALS
     // ============================================
-    let chemIrrigatedTotal = 0;
-    let chemDrylandTotal = 0;
-    const chemicalBody = document.getElementById('chemicalBody');
-    chemicalBody.innerHTML = '';
+    let preIrrigatedTotal = 0;
+    let preDrylandTotal = 0;
+    const preChemBody = document.getElementById('preChemBody');
+    preChemBody.innerHTML = '';
 
-    // Group chemicals by pass for application cost
-    const passes = new Set(CHEMICALS.map(c => c.pass));
-    const applicationCost = passes.size * CHEM_APPLICATION_RATE * totalAcres;
+    PRE_CHEMICALS.forEach(chem => {
+        const irrigatedCost = chem.costPerAcre * irrigatedAcres;
+        const drylandCost = chem.costPerAcre * drylandAcres;
+        preIrrigatedTotal += irrigatedCost;
+        preDrylandTotal += drylandCost;
 
-    CHEMICALS.forEach(chem => {
-        let irrigatedCost, drylandCost, productCost;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${chem.name}</td>
+            <td>${chem.ratePerAcre} ${chem.unit}/ac</td>
+            <td>${formatCurrencyDecimal(chem.costPerAcre)}</td>
+            <td>${formatCurrency(irrigatedCost)}</td>
+            <td>${formatCurrency(drylandCost)}</td>
+            <td>${formatCurrency(irrigatedCost + drylandCost)}</td>
+        `;
+        preChemBody.appendChild(row);
+    });
+
+    // Pre application cost
+    const preAppIrrigated = CHEM_APPLICATION_RATE * irrigatedAcres;
+    const preAppDryland = CHEM_APPLICATION_RATE * drylandAcres;
+    preIrrigatedTotal += preAppIrrigated;
+    preDrylandTotal += preAppDryland;
+
+    const preAppRow = document.createElement('tr');
+    preAppRow.innerHTML = `
+        <td><em>Application Cost</em></td>
+        <td>@ ${SPRAY_RATE_GPA} GPA</td>
+        <td>${formatCurrencyDecimal(CHEM_APPLICATION_RATE)}</td>
+        <td>${formatCurrency(preAppIrrigated)}</td>
+        <td>${formatCurrency(preAppDryland)}</td>
+        <td>${formatCurrency(preAppIrrigated + preAppDryland)}</td>
+    `;
+    preChemBody.appendChild(preAppRow);
+
+    const preTotal = preIrrigatedTotal + preDrylandTotal;
+    document.getElementById('preIrrigatedTotal').textContent = formatCurrency(preIrrigatedTotal);
+    document.getElementById('preDrylandTotal').textContent = formatCurrency(preDrylandTotal);
+    document.getElementById('preChemTotal').textContent = formatCurrency(preTotal);
+
+    // ============================================
+    // POST-EMERGENCE CHEMICALS
+    // ============================================
+    let postIrrigatedTotal = 0;
+    let postDrylandTotal = 0;
+    const postChemBody = document.getElementById('postChemBody');
+    postChemBody.innerHTML = '';
+
+    POST_CHEMICALS.forEach(chem => {
+        let irrigatedCost, drylandCost;
 
         if (chem.irrigatedOnly) {
             irrigatedCost = chem.costPerAcre * irrigatedAcres;
             drylandCost = 0;
-            productCost = irrigatedCost;
         } else {
             irrigatedCost = chem.costPerAcre * irrigatedAcres;
             drylandCost = chem.costPerAcre * drylandAcres;
-            productCost = irrigatedCost + drylandCost;
         }
 
-        chemIrrigatedTotal += irrigatedCost;
-        chemDrylandTotal += drylandCost;
+        postIrrigatedTotal += irrigatedCost;
+        postDrylandTotal += drylandCost;
 
         const row = document.createElement('tr');
         const noteText = chem.irrigatedOnly ? ' <em>(irr only)</em>' : '';
         row.innerHTML = `
             <td>${chem.name}${noteText}</td>
-            <td>${chem.pass}</td>
             <td>${chem.ratePerAcre} ${chem.unit}/ac</td>
             <td>${formatCurrencyDecimal(chem.costPerAcre)}</td>
-            <td>${formatCurrency(productCost)}</td>
+            <td>${formatCurrency(irrigatedCost)}</td>
+            <td>${formatCurrency(drylandCost)}</td>
+            <td>${formatCurrency(irrigatedCost + drylandCost)}</td>
         `;
-        chemicalBody.appendChild(row);
+        postChemBody.appendChild(row);
     });
 
-    // Add application row
-    const numPasses = passes.size;
-    const appRow = document.createElement('tr');
-    appRow.innerHTML = `
-        <td><em>Application (${numPasses} passes @ ${SPRAY_RATE_GPA} GPA)</em></td>
-        <td>-</td>
-        <td>-</td>
-        <td>${formatCurrencyDecimal(CHEM_APPLICATION_RATE * numPasses)}/ac</td>
-        <td>${formatCurrency(applicationCost)}</td>
+    // Post application cost
+    const postAppIrrigated = CHEM_APPLICATION_RATE * irrigatedAcres;
+    const postAppDryland = CHEM_APPLICATION_RATE * drylandAcres;
+    postIrrigatedTotal += postAppIrrigated;
+    postDrylandTotal += postAppDryland;
+
+    const postAppRow = document.createElement('tr');
+    postAppRow.innerHTML = `
+        <td><em>Application Cost</em></td>
+        <td>@ ${SPRAY_RATE_GPA} GPA</td>
+        <td>${formatCurrencyDecimal(CHEM_APPLICATION_RATE)}</td>
+        <td>${formatCurrency(postAppIrrigated)}</td>
+        <td>${formatCurrency(postAppDryland)}</td>
+        <td>${formatCurrency(postAppIrrigated + postAppDryland)}</td>
     `;
-    chemicalBody.appendChild(appRow);
+    postChemBody.appendChild(postAppRow);
 
-    // Split application cost proportionally
-    const appIrrigated = totalAcres > 0 ? applicationCost * (irrigatedAcres / totalAcres) : 0;
-    const appDryland = totalAcres > 0 ? applicationCost * (drylandAcres / totalAcres) : 0;
-    chemIrrigatedTotal += appIrrigated;
-    chemDrylandTotal += appDryland;
+    const postTotal = postIrrigatedTotal + postDrylandTotal;
+    document.getElementById('postIrrigatedTotal').textContent = formatCurrency(postIrrigatedTotal);
+    document.getElementById('postDrylandTotal').textContent = formatCurrency(postDrylandTotal);
+    document.getElementById('postChemTotal').textContent = formatCurrency(postTotal);
 
+    // Combined chemical totals
+    const chemIrrigatedTotal = preIrrigatedTotal + postIrrigatedTotal;
+    const chemDrylandTotal = preDrylandTotal + postDrylandTotal;
     const totalChemCost = chemIrrigatedTotal + chemDrylandTotal;
-    document.getElementById('chemTotal').textContent = formatCurrency(totalChemCost);
 
     // ============================================
     // FERTILIZER COSTS
     // ============================================
-    let fertCostPerAcre = 0;
     let fertIrrigatedTotal = 0;
     let fertDrylandTotal = 0;
     const fertilizerBody = document.getElementById('fertilizerBody');
@@ -354,7 +306,6 @@ function calculate() {
 
     FERTILIZER.forEach(fert => {
         const costPerAcre = fert.lbsPerAcre * fert.pricePerLb;
-        fertCostPerAcre += costPerAcre;
         const irrigatedCost = costPerAcre * irrigatedAcres;
         const drylandCost = costPerAcre * drylandAcres;
 
@@ -373,7 +324,7 @@ function calculate() {
         fertilizerBody.appendChild(row);
     });
 
-    // Add fertilizer application cost
+    // Fertilizer application cost
     const fertAppIrrigated = FERT_APPLICATION_RATE * irrigatedAcres;
     const fertAppDryland = FERT_APPLICATION_RATE * drylandAcres;
     fertIrrigatedTotal += fertAppIrrigated;
@@ -415,12 +366,13 @@ function calculate() {
     document.getElementById('irrigatedTotalCost').textContent = formatCurrency(irrigatedTotal);
     document.getElementById('drylandTotalCost').textContent = formatCurrency(drylandTotal);
 
-    // Update expense breakdown summary
+    // Update expense breakdown
+    const totalAppCost = preAppIrrigated + preAppDryland + postAppIrrigated + postAppDryland + fertAppIrrigated + fertAppDryland;
     document.getElementById('summaryOps').textContent = formatCurrency(opsTotal);
     document.getElementById('summaryIrr').textContent = formatCurrency(irrIrrigatedTotal);
-    document.getElementById('summaryChem').textContent = formatCurrency(totalChemCost - applicationCost);
-    document.getElementById('summaryFert').textContent = formatCurrency(fertTotal - (fertAppIrrigated + fertAppDryland));
-    document.getElementById('summaryApp').textContent = formatCurrency(applicationCost + fertAppIrrigated + fertAppDryland);
+    document.getElementById('summaryChem').textContent = formatCurrency(totalChemCost - (preAppIrrigated + preAppDryland + postAppIrrigated + postAppDryland));
+    document.getElementById('summaryFert').textContent = formatCurrency(fertTotal - fertAppIrrigated - fertAppDryland);
+    document.getElementById('summaryApp').textContent = formatCurrency(totalAppCost);
 
     document.getElementById('grandTotal').textContent = formatCurrency(grandTotal);
     document.getElementById('grandIrrigated').textContent = formatCurrency(irrigatedTotal);
@@ -429,7 +381,7 @@ function calculate() {
     document.getElementById('drylandPerAcreExp').textContent = formatCurrencyDecimal(drylandAcres > 0 ? drylandTotal / drylandAcres : 0);
 
     // ============================================
-    // REVENUE & PROFIT ANALYSIS
+    // REVENUE & PROFIT
     // ============================================
     const irrigatedRevenue = irrigatedBushels * cornPrice;
     const drylandRevenue = drylandBushels * cornPrice;
@@ -439,32 +391,27 @@ function calculate() {
     const drylandNet = drylandRevenue - drylandTotal;
     const totalNet = totalRevenue - grandTotal;
 
-    // Update bushels
     document.getElementById('irrigatedBushels').textContent = formatNumber(irrigatedBushels) + ' bu';
     document.getElementById('drylandBushels').textContent = formatNumber(drylandBushels) + ' bu';
     document.getElementById('totalBushels').textContent = formatNumber(totalBushels) + ' bu';
 
-    // Update revenue
     document.getElementById('irrigatedRevenue').textContent = formatCurrency(irrigatedRevenue);
     document.getElementById('drylandRevenue').textContent = formatCurrency(drylandRevenue);
     document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
 
-    // Update expenses in profit table
     document.getElementById('irrigatedExpenses').textContent = formatCurrency(irrigatedTotal);
     document.getElementById('drylandExpenses').textContent = formatCurrency(drylandTotal);
     document.getElementById('totalExpenses').textContent = formatCurrency(grandTotal);
 
-    // Update net profit
     document.getElementById('irrigatedNet').textContent = formatCurrency(irrigatedNet);
     document.getElementById('drylandNet').textContent = formatCurrency(drylandNet);
     document.getElementById('totalNet').textContent = formatCurrency(totalNet);
 
-    // Update returns per acre
     document.getElementById('irrigatedReturn').textContent = formatCurrencyDecimal(irrigatedAcres > 0 ? irrigatedNet / irrigatedAcres : 0);
     document.getElementById('drylandReturn').textContent = formatCurrencyDecimal(drylandAcres > 0 ? drylandNet / drylandAcres : 0);
     document.getElementById('avgReturn').textContent = formatCurrencyDecimal(totalAcres > 0 ? totalNet / totalAcres : 0);
 
-    // Update profit summary box
+    // Profit summary box
     const profitBox = document.getElementById('profitBox');
     const netProfitDisplay = document.getElementById('netProfitDisplay');
     const profitPerAcre = document.getElementById('profitPerAcre');
@@ -480,7 +427,6 @@ function calculate() {
         profitBox.querySelector('h3').textContent = 'NET LOSS';
     }
 
-    // Color code net returns in table
     styleNetReturn('irrigatedNet', irrigatedNet);
     styleNetReturn('drylandNet', drylandNet);
     styleNetReturn('totalNet', totalNet);
@@ -495,7 +441,6 @@ function styleNetReturn(elementId, value) {
     }
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     calculate();
     document.getElementById('genDate').textContent = new Date().toLocaleDateString('en-US', {

@@ -130,27 +130,59 @@
             </table>
         </section>
 
-        <!-- Chemical Program -->
+        <!-- Pre-Emergence Chemical Program -->
         <section class="card expense-card">
-            <h2>2-Pass Chemical Program</h2>
-            <p class="section-note">Pre-emergence + Post-emergence applications @ 12 GPA</p>
+            <h2>Pre-Emergence Chemical Program</h2>
+            <p class="section-note">Applied prior to crop emergence @ 12 GPA</p>
             <table class="operations-table">
                 <thead>
                     <tr>
                         <th>Chemical</th>
-                        <th>Pass</th>
                         <th>Rate/Acre</th>
-                        <th>Product Cost/Acre</th>
+                        <th>Cost/Acre</th>
+                        <th>Irrigated Total</th>
+                        <th>Dryland Total</th>
                         <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="chemicalBody">
+                <tbody id="preChemBody">
                     <!-- Populated by JavaScript -->
                 </tbody>
                 <tfoot>
                     <tr class="total-row">
-                        <td colspan="4"><strong>Chemical Subtotal</strong></td>
-                        <td id="chemTotal">$0</td>
+                        <td colspan="3"><strong>Pre-Emergence Subtotal</strong></td>
+                        <td id="preIrrigatedTotal">$0</td>
+                        <td id="preDrylandTotal">$0</td>
+                        <td id="preChemTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Post-Emergence Chemical Program -->
+        <section class="card expense-card">
+            <h2>Post-Emergence Chemical Program</h2>
+            <p class="section-note">Applied after crop emergence @ 12 GPA</p>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Chemical</th>
+                        <th>Rate/Acre</th>
+                        <th>Cost/Acre</th>
+                        <th>Irrigated Total</th>
+                        <th>Dryland Total</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="postChemBody">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Post-Emergence Subtotal</strong></td>
+                        <td id="postIrrigatedTotal">$0</td>
+                        <td id="postDrylandTotal">$0</td>
+                        <td id="postChemTotal">$0</td>
                     </tr>
                 </tfoot>
             </table>
