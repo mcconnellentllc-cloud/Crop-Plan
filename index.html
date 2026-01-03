@@ -130,6 +130,35 @@
             </table>
         </section>
 
+        <!-- Land Rental -->
+        <section class="card expense-card">
+            <h2>Land Rental</h2>
+            <p class="section-note">NE Colorado average cash rental rates</p>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Details</th>
+                        <th>Rate/Acre</th>
+                        <th>Irrigated Cost</th>
+                        <th>Dryland Cost</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="landRentBody">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Land Rental Subtotal</strong></td>
+                        <td id="rentIrrigatedTotal">$0</td>
+                        <td id="rentDrylandTotal">$0</td>
+                        <td id="rentTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
         <!-- Pre-Emergence Chemical Program -->
         <section class="card expense-card">
             <h2>Pre-Emergence Chemical Program</h2>
@@ -231,6 +260,10 @@
                 <div class="breakdown-item">
                     <h4>Irrigation</h4>
                     <p class="breakdown-value" id="summaryIrr">$0</p>
+                </div>
+                <div class="breakdown-item">
+                    <h4>Land Rental</h4>
+                    <p class="breakdown-value" id="summaryRent">$0</p>
                 </div>
                 <div class="breakdown-item">
                     <h4>Chemical Program</h4>

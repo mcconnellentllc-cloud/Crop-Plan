@@ -22,6 +22,14 @@ const HAUL_DISTANCE_ONE_WAY = 22;
 const HAUL_RATE_PER_BUSHEL = 0.18;
 
 // ============================================
+// LAND RENTAL - NE Colorado Average Rates
+// ============================================
+const LAND_RENTAL = {
+    irrigated: { name: 'Irrigated Land Rent', costPerAcre: 300.00 },
+    dryland: { name: 'Dryland Land Rent', costPerAcre: 75.00 }
+};
+
+// ============================================
 // IRRIGATION COSTS (Irrigated Only)
 // ============================================
 const IRRIGATION_COSTS = [
@@ -40,24 +48,24 @@ const HYDROVANT_RATE_PERCENT = 0.001;
 const HYDROVANT_COST_PER_GAL = 165.00;
 const HYDROVANT_COST_PER_ACRE = SPRAY_RATE_GPA * HYDROVANT_RATE_PERCENT * HYDROVANT_COST_PER_GAL;
 
-// Pre-Emergence Chemicals
+// Pre-Emergence Chemicals (costPerAcre = ratePerAcre * costPerUnit)
 const PRE_CHEMICALS = [
-    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerUnit: 0.12, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'Valor SX (flumioxazin)', ratePerAcre: 2.5, unit: 'oz', costPerUnit: 4.20, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerUnit: 1.95, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerUnit: 8.50, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'Fluroxypyr (Starane Ultra)', ratePerAcre: 0.67, unit: 'pt', costPerUnit: 12.50, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: 32 * 0.12 },
+    { name: 'Valor SX (flumioxazin)', ratePerAcre: 2.5, unit: 'oz', costPerAcre: 2.5 * 4.20 },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: 1.0 * 1.95 },
+    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerAcre: 1.33 * 8.50 },
+    { name: 'Fluroxypyr (Starane Ultra)', ratePerAcre: 0.67, unit: 'pt', costPerAcre: 0.67 * 12.50 },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE }
 ];
 
-// Post-Emergence Chemicals
+// Post-Emergence Chemicals (costPerAcre = ratePerAcre * costPerUnit)
 const POST_CHEMICALS = [
-    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerUnit: 0.12, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerUnit: 0.35, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerUnit: 1.95, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
-    { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerUnit: 0.95, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } },
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: 32 * 0.12 },
+    { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerAcre: 2.5 * 0.35 },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: 1.0 * 1.95 },
+    { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerAcre: 3.0 * 0.95 },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE },
-    { name: 'Acetochlor (Warrant)', ratePerAcre: 3.0, unit: 'pt', costPerUnit: 4.75, irrigatedOnly: true, get costPerAcre() { return this.ratePerAcre * this.costPerUnit; } }
+    { name: 'Acetochlor (Warrant)', ratePerAcre: 3.0, unit: 'pt', costPerAcre: 3.0 * 4.75, irrigatedOnly: true }
 ];
 
 // Fertilizer - 220N-40P-25S
@@ -185,6 +193,44 @@ function calculate() {
     document.getElementById('irrIrrigatedTotal').textContent = formatCurrency(irrIrrigatedTotal);
     document.getElementById('irrDrylandTotal').textContent = '$0';
     document.getElementById('irrTotal').textContent = formatCurrency(irrIrrigatedTotal);
+
+    // ============================================
+    // LAND RENTAL
+    // ============================================
+    const landRentBody = document.getElementById('landRentBody');
+    landRentBody.innerHTML = '';
+
+    const irrigatedRentCost = LAND_RENTAL.irrigated.costPerAcre * irrigatedAcres;
+    const drylandRentCost = LAND_RENTAL.dryland.costPerAcre * drylandAcres;
+    const totalRentCost = irrigatedRentCost + drylandRentCost;
+
+    // Irrigated rent row
+    const irrRentRow = document.createElement('tr');
+    irrRentRow.innerHTML = `
+        <td>${LAND_RENTAL.irrigated.name}</td>
+        <td>NE Colorado avg rate</td>
+        <td>${formatCurrencyDecimal(LAND_RENTAL.irrigated.costPerAcre)}</td>
+        <td>${formatCurrency(irrigatedRentCost)}</td>
+        <td>$0</td>
+        <td>${formatCurrency(irrigatedRentCost)}</td>
+    `;
+    landRentBody.appendChild(irrRentRow);
+
+    // Dryland rent row
+    const dryRentRow = document.createElement('tr');
+    dryRentRow.innerHTML = `
+        <td>${LAND_RENTAL.dryland.name}</td>
+        <td>NE Colorado avg rate</td>
+        <td>${formatCurrencyDecimal(LAND_RENTAL.dryland.costPerAcre)}</td>
+        <td>$0</td>
+        <td>${formatCurrency(drylandRentCost)}</td>
+        <td>${formatCurrency(drylandRentCost)}</td>
+    `;
+    landRentBody.appendChild(dryRentRow);
+
+    document.getElementById('rentIrrigatedTotal').textContent = formatCurrency(irrigatedRentCost);
+    document.getElementById('rentDrylandTotal').textContent = formatCurrency(drylandRentCost);
+    document.getElementById('rentTotal').textContent = formatCurrency(totalRentCost);
 
     // ============================================
     // PRE-EMERGENCE CHEMICALS
@@ -349,8 +395,8 @@ function calculate() {
     // ============================================
     // TOTAL EXPENSES
     // ============================================
-    const irrigatedTotal = opsIrrigatedTotal + irrIrrigatedTotal + chemIrrigatedTotal + fertIrrigatedTotal;
-    const drylandTotal = opsDrylandTotal + chemDrylandTotal + fertDrylandTotal;
+    const irrigatedTotal = opsIrrigatedTotal + irrIrrigatedTotal + irrigatedRentCost + chemIrrigatedTotal + fertIrrigatedTotal;
+    const drylandTotal = opsDrylandTotal + drylandRentCost + chemDrylandTotal + fertDrylandTotal;
     const grandTotal = irrigatedTotal + drylandTotal;
 
     // Update summary cards
@@ -370,6 +416,7 @@ function calculate() {
     const totalAppCost = preAppIrrigated + preAppDryland + postAppIrrigated + postAppDryland + fertAppIrrigated + fertAppDryland;
     document.getElementById('summaryOps').textContent = formatCurrency(opsTotal);
     document.getElementById('summaryIrr').textContent = formatCurrency(irrIrrigatedTotal);
+    document.getElementById('summaryRent').textContent = formatCurrency(totalRentCost);
     document.getElementById('summaryChem').textContent = formatCurrency(totalChemCost - (preAppIrrigated + preAppDryland + postAppIrrigated + postAppDryland));
     document.getElementById('summaryFert').textContent = formatCurrency(fertTotal - fertAppIrrigated - fertAppDryland);
     document.getElementById('summaryApp').textContent = formatCurrency(totalAppCost);
