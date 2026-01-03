@@ -46,36 +46,59 @@ const CHEM_APPLICATION_RATE = 8.00;  // $8/acre per application pass
 const SPRAY_RATE_GPA = 12;
 const HYDROVANT_RATE_PERCENT = 0.001;
 const HYDROVANT_COST_PER_GAL = 165.00;
-const HYDROVANT_COST_PER_ACRE = SPRAY_RATE_GPA * HYDROVANT_RATE_PERCENT * HYDROVANT_COST_PER_GAL;
+const HYDROVANT_COST_PER_ACRE = SPRAY_RATE_GPA * HYDROVANT_RATE_PERCENT * HYDROVANT_COST_PER_GAL; // $1.98
 
-// Pre-Emergence Chemicals (costPerAcre = ratePerAcre * costPerUnit)
+// Pre-calculated chemical costs per acre
+const GLYPHOSATE_COST = 32 * 0.12;        // $3.84
+const VALOR_COST = 2.5 * 4.20;            // $10.50
+const ATRAZINE_COST = 1.0 * 1.95;         // $1.95
+const METOLACHLOR_COST = 1.33 * 8.50;     // $11.31
+const FLUROXYPYR_COST = 0.67 * 12.50;     // $8.38
+const AMS_COST = 2.5 * 0.35;              // $0.88
+const DIFLEXX_COST = 3.0 * 0.95;          // $2.85
+const WARRANT_COST = 3.0 * 4.75;          // $14.25
+
+// Pre-Emergence Chemicals
 const PRE_CHEMICALS = [
-    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: 32 * 0.12 },
-    { name: 'Valor SX (flumioxazin)', ratePerAcre: 2.5, unit: 'oz', costPerAcre: 2.5 * 4.20 },
-    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: 1.0 * 1.95 },
-    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerAcre: 1.33 * 8.50 },
-    { name: 'Fluroxypyr (Starane Ultra)', ratePerAcre: 0.67, unit: 'pt', costPerAcre: 0.67 * 12.50 },
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: GLYPHOSATE_COST },
+    { name: 'Valor SX (flumioxazin)', ratePerAcre: 2.5, unit: 'oz', costPerAcre: VALOR_COST },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: ATRAZINE_COST },
+    { name: 'Metolachlor (Dual II Magnum)', ratePerAcre: 1.33, unit: 'pt', costPerAcre: METOLACHLOR_COST },
+    { name: 'Fluroxypyr (Starane Ultra)', ratePerAcre: 0.67, unit: 'pt', costPerAcre: FLUROXYPYR_COST },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE }
 ];
 
-// Post-Emergence Chemicals (costPerAcre = ratePerAcre * costPerUnit)
+// Pre-calculated cost per acre for Pre-emergence (including application)
+const PRE_COST_PER_ACRE = GLYPHOSATE_COST + VALOR_COST + ATRAZINE_COST + METOLACHLOR_COST + FLUROXYPYR_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
+
+// Post-Emergence Chemicals
 const POST_CHEMICALS = [
-    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: 32 * 0.12 },
-    { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerAcre: 2.5 * 0.35 },
-    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: 1.0 * 1.95 },
-    { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerAcre: 3.0 * 0.95 },
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: GLYPHOSATE_COST },
+    { name: 'AMS (Ammonium Sulfate)', ratePerAcre: 2.5, unit: 'lb', costPerAcre: AMS_COST },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: ATRAZINE_COST },
+    { name: 'DiFlexx (dicamba)', ratePerAcre: 3.0, unit: 'oz', costPerAcre: DIFLEXX_COST },
     { name: 'Hydrovant (adjuvant)', ratePerAcre: 0.1, unit: '% v/v', costPerAcre: HYDROVANT_COST_PER_ACRE },
-    { name: 'Acetochlor (Warrant)', ratePerAcre: 3.0, unit: 'pt', costPerAcre: 3.0 * 4.75, irrigatedOnly: true }
+    { name: 'Acetochlor (Warrant)', ratePerAcre: 3.0, unit: 'pt', costPerAcre: WARRANT_COST, irrigatedOnly: true }
 ];
+
+// Pre-calculated cost per acre for Post-emergence (including application)
+const POST_COST_PER_ACRE_IRR = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + WARRANT_COST + CHEM_APPLICATION_RATE;
+const POST_COST_PER_ACRE_DRY = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
 
 // Fertilizer - 220N-40P-25S
+const NITROGEN_COST = 220 * 0.58;         // $127.60
+const PHOSPHORUS_COST = 40 * 0.61;        // $24.40
+const SULFUR_COST = 25 * 0.38;            // $9.50
+const FERT_APPLICATION_RATE = 8.25;
+
 const FERTILIZER = [
-    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58 },
-    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61 },
-    { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38 }
+    { nutrient: 'Nitrogen (N)', lbsPerAcre: 220, pricePerLb: 0.58, costPerAcre: NITROGEN_COST },
+    { nutrient: 'Phosphorus (P2O5)', lbsPerAcre: 40, pricePerLb: 0.61, costPerAcre: PHOSPHORUS_COST },
+    { nutrient: 'Sulfur (S)', lbsPerAcre: 25, pricePerLb: 0.38, costPerAcre: SULFUR_COST }
 ];
 
-const FERT_APPLICATION_RATE = 8.25;
+// Pre-calculated cost per acre for Fertilizer (including application)
+const FERT_COST_PER_ACRE = NITROGEN_COST + PHOSPHORUS_COST + SULFUR_COST + FERT_APPLICATION_RATE;
 
 // Expected yields (bu/acre)
 const IRRIGATED_YIELD = 240;
@@ -281,8 +304,7 @@ function calculate() {
     document.getElementById('preChemTotal').textContent = formatCurrency(preTotal);
 
     // Pre-emergence cost per acre (same for irrigated and dryland)
-    const preCostPerAcre = PRE_CHEMICALS.reduce((sum, chem) => sum + chem.costPerAcre, 0) + CHEM_APPLICATION_RATE;
-    document.getElementById('preCostPerAcre').textContent = formatCurrencyDecimal(preCostPerAcre);
+    document.getElementById('preCostPerAcre').textContent = formatCurrencyDecimal(PRE_COST_PER_ACRE);
 
     // ============================================
     // POST-EMERGENCE CHEMICALS
@@ -342,10 +364,8 @@ function calculate() {
     document.getElementById('postChemTotal').textContent = formatCurrency(postTotal);
 
     // Post-emergence cost per acre (different for irrigated vs dryland due to Warrant)
-    const postCostPerAcreIrr = POST_CHEMICALS.reduce((sum, chem) => sum + chem.costPerAcre, 0) + CHEM_APPLICATION_RATE;
-    const postCostPerAcreDry = POST_CHEMICALS.filter(c => !c.irrigatedOnly).reduce((sum, chem) => sum + chem.costPerAcre, 0) + CHEM_APPLICATION_RATE;
-    document.getElementById('postCostPerAcreIrr').textContent = formatCurrencyDecimal(postCostPerAcreIrr);
-    document.getElementById('postCostPerAcreDry').textContent = formatCurrencyDecimal(postCostPerAcreDry);
+    document.getElementById('postCostPerAcreIrr').textContent = formatCurrencyDecimal(POST_COST_PER_ACRE_IRR);
+    document.getElementById('postCostPerAcreDry').textContent = formatCurrencyDecimal(POST_COST_PER_ACRE_DRY);
 
     // Combined chemical totals
     const chemIrrigatedTotal = preIrrigatedTotal + postIrrigatedTotal;
@@ -403,8 +423,7 @@ function calculate() {
     document.getElementById('fertTotal').textContent = formatCurrency(fertTotal);
 
     // Fertilizer cost per acre (same for irrigated and dryland)
-    const fertCostPerAcre = FERTILIZER.reduce((sum, fert) => sum + (fert.lbsPerAcre * fert.pricePerLb), 0) + FERT_APPLICATION_RATE;
-    document.getElementById('fertCostPerAcre').textContent = formatCurrencyDecimal(fertCostPerAcre);
+    document.getElementById('fertCostPerAcre').textContent = formatCurrencyDecimal(FERT_COST_PER_ACRE);
 
     // ============================================
     // TOTAL EXPENSES
