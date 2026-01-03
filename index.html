@@ -20,181 +20,123 @@
             <strong>Note:</strong> All figures shown are estimates based on current market data and regional averages. Actual costs may vary. Numbers can be adjusted when final pricing is confirmed.
         </div>
 
-        <!-- Summary Cards -->
-        <section class="summary-cards">
-            <div class="card summary-card">
-                <h3>Total Acres</h3>
-                <div class="big-number" id="totalAcres">960</div>
-                <p>Irrigated: 360 | Dryland: 600</p>
-            </div>
-            <div class="card summary-card expense">
-                <h3>Total Expenses</h3>
-                <div class="big-number" id="totalCost">$0</div>
-                <p>All costs included</p>
-            </div>
-            <div class="card summary-card">
-                <h3>Avg Cost/Acre</h3>
-                <div class="big-number" id="costPerAcre">$0</div>
-                <p>Weighted average</p>
-            </div>
-        </section>
-
-        <!-- Crop Configuration -->
-        <section class="card">
+        <!-- Configuration Inputs -->
+        <section class="card config-card">
             <h2>Crop Configuration</h2>
-            <div class="crop-grid">
-                <div class="crop-item irrigated">
-                    <h3>Irrigated Corn</h3>
-                    <div class="input-group">
-                        <label for="irrigatedAcres">Acres:</label>
-                        <input type="number" id="irrigatedAcres" value="360" min="0" onchange="calculate()">
-                    </div>
-                    <div class="crop-stats">
-                        <p>Expected Yield: <span id="irrigatedYield">240</span> bu/ac</p>
-                        <p>Cost/Acre: <span id="irrigatedCostPerAcre">$0</span></p>
-                        <p>Total Cost: <span id="irrigatedTotalCost">$0</span></p>
-                    </div>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label for="irrigatedAcres">Irrigated Acres:</label>
+                    <input type="number" id="irrigatedAcres" value="360" min="0" onchange="calculate()">
                 </div>
-                <div class="crop-item dryland">
-                    <h3>Dryland Corn</h3>
-                    <div class="input-group">
-                        <label for="drylandAcres">Acres:</label>
-                        <input type="number" id="drylandAcres" value="600" min="0" onchange="calculate()">
-                    </div>
-                    <div class="crop-stats">
-                        <p>Expected Yield: <span id="drylandYield">90</span> bu/ac</p>
-                        <p>Cost/Acre: <span id="drylandCostPerAcre">$0</span></p>
-                        <p>Total Cost: <span id="drylandTotalCost">$0</span></p>
-                    </div>
+                <div class="config-item">
+                    <label for="drylandAcres">Dryland Acres:</label>
+                    <input type="number" id="drylandAcres" value="600" min="0" onchange="calculate()">
+                </div>
+                <div class="config-item">
+                    <label for="cornPrice">Corn Price ($/bu):</label>
+                    <input type="number" id="cornPrice" value="4.50" step="0.05" onchange="calculate()">
                 </div>
             </div>
         </section>
 
         <!-- ============================================ -->
-        <!-- EXPENSES SECTION -->
+        <!-- IRRIGATED SECTION -->
         <!-- ============================================ -->
-        <div class="section-header expense-header">
-            <h2>EXPENSES</h2>
+        <div class="section-header irrigated-header">
+            <h2>IRRIGATED CORN - <span id="irrAcresDisplay">360</span> Acres</h2>
+            <p>Expected Yield: <span id="irrigatedYield">240</span> bu/acre</p>
         </div>
 
-        <!-- Field Operations -->
-        <section class="card expense-card">
+        <!-- Irrigated Field Operations -->
+        <section class="card expense-card irrigated-section">
             <h2>Field Operations</h2>
-            <p class="section-note">CSU/Iowa State rates at 75% of range spread</p>
             <table class="operations-table">
                 <thead>
                     <tr>
                         <th>Operation</th>
                         <th>Passes</th>
                         <th>Rate/Acre</th>
-                        <th>Irrigated Cost</th>
-                        <th>Dryland Cost</th>
-                        <th>Total</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="operationsBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrOpsBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="3"><strong>Operations Subtotal</strong></td>
-                        <td id="opsIrrigatedTotal">$0</td>
-                        <td id="opsDrylandTotal">$0</td>
-                        <td id="opsTotal">$0</td>
+                        <td id="irrOpsTotal">$0</td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Irrigation Costs (Irrigated Only) -->
-        <section class="card expense-card">
-            <h2>Irrigation Costs (Irrigated Only)</h2>
-            <p class="section-note">Well electricity and maintenance - applies to irrigated acres only</p>
+        <!-- Irrigated Irrigation Costs -->
+        <section class="card expense-card irrigated-section">
+            <h2>Irrigation Costs</h2>
             <table class="operations-table">
                 <thead>
                     <tr>
                         <th>Item</th>
                         <th>Details</th>
                         <th>Cost/Acre</th>
-                        <th>Irrigated Cost</th>
-                        <th>Dryland Cost</th>
-                        <th>Total</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="irrigationBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrIrrigationBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="3"><strong>Irrigation Subtotal</strong></td>
-                        <td id="irrIrrigatedTotal">$0</td>
-                        <td id="irrDrylandTotal">$0</td>
-                        <td id="irrTotal">$0</td>
+                        <td id="irrIrrigationTotal">$0</td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Land Rental -->
-        <section class="card expense-card">
+        <!-- Irrigated Land Rental -->
+        <section class="card expense-card irrigated-section">
             <h2>Land Rental</h2>
-            <p class="section-note">NE Colorado average cash rental rates</p>
             <table class="operations-table">
                 <thead>
                     <tr>
                         <th>Type</th>
                         <th>Details</th>
                         <th>Rate/Acre</th>
-                        <th>Irrigated Cost</th>
-                        <th>Dryland Cost</th>
-                        <th>Total</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="landRentBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrRentBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="3"><strong>Land Rental Subtotal</strong></td>
-                        <td id="rentIrrigatedTotal">$0</td>
-                        <td id="rentDrylandTotal">$0</td>
-                        <td id="rentTotal">$0</td>
+                        <td id="irrRentTotal">$0</td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Crop Insurance -->
-        <section class="card expense-card">
-            <h2>Crop Insurance</h2>
-            <p class="section-note">RCIS Multi-Peril (MPCI/RP) and Hail coverage</p>
+        <!-- Irrigated Crop Insurance -->
+        <section class="card expense-card irrigated-section">
+            <h2>Crop Insurance (RCIS)</h2>
             <table class="operations-table">
                 <thead>
                     <tr>
                         <th>Coverage Type</th>
                         <th>Details</th>
                         <th>Premium/Acre</th>
-                        <th>Irrigated Cost</th>
-                        <th>Dryland Cost</th>
-                        <th>Total</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="insuranceBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrInsBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="3"><strong>Insurance Subtotal</strong></td>
-                        <td id="insIrrigatedTotal">$0</td>
-                        <td id="insDrylandTotal">$0</td>
-                        <td id="insTotal">$0</td>
+                        <td id="irrInsTotal">$0</td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Pre-Emergence Chemical Program -->
-        <section class="card expense-card">
+        <!-- Irrigated Pre-Emergence -->
+        <section class="card expense-card irrigated-section">
             <h2>Pre-Emergence Chemical Program</h2>
             <p class="section-note">Applied prior to crop emergence @ 12 GPA</p>
             <table class="operations-table">
@@ -203,64 +145,51 @@
                         <th>Chemical</th>
                         <th>Rate/Acre</th>
                         <th>Cost/Acre</th>
-                        <th>Irrigated Total</th>
-                        <th>Dryland Total</th>
                         <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="preChemBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrPreChemBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="3"><strong>Pre-Emergence Subtotal</strong></td>
-                        <td id="preIrrigatedTotal">$0</td>
-                        <td id="preDrylandTotal">$0</td>
-                        <td id="preChemTotal">$0</td>
+                        <td id="irrPreChemTotal">$0</td>
                     </tr>
                     <tr class="cost-per-acre-row">
-                        <td colspan="6"><strong>Pre-Emergence Cost Per Acre: <span id="preCostPerAcre">$0.00</span></strong></td>
+                        <td colspan="4"><strong>Cost Per Acre: <span id="irrPreCostPerAcre">$0.00</span></strong></td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Post-Emergence Chemical Program -->
-        <section class="card expense-card">
+        <!-- Irrigated Post-Emergence -->
+        <section class="card expense-card irrigated-section">
             <h2>Post-Emergence Chemical Program</h2>
-            <p class="section-note">Applied after crop emergence @ 12 GPA</p>
+            <p class="section-note">Applied after crop emergence @ 12 GPA (includes Warrant)</p>
             <table class="operations-table">
                 <thead>
                     <tr>
                         <th>Chemical</th>
                         <th>Rate/Acre</th>
                         <th>Cost/Acre</th>
-                        <th>Irrigated Total</th>
-                        <th>Dryland Total</th>
                         <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="postChemBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrPostChemBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="3"><strong>Post-Emergence Subtotal</strong></td>
-                        <td id="postIrrigatedTotal">$0</td>
-                        <td id="postDrylandTotal">$0</td>
-                        <td id="postChemTotal">$0</td>
+                        <td id="irrPostChemTotal">$0</td>
                     </tr>
                     <tr class="cost-per-acre-row">
-                        <td colspan="6"><strong>Post-Emergence Cost Per Acre: <span id="postCostPerAcreIrr">$0.00</span> (irrigated) | <span id="postCostPerAcreDry">$0.00</span> (dryland)</strong></td>
+                        <td colspan="4"><strong>Cost Per Acre: <span id="irrPostCostPerAcre">$0.00</span></strong></td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Fertilizer Program -->
-        <section class="card expense-card">
-            <h2>Fertilizer Program</h2>
-            <p class="section-note">Irrigated: 220N-40P-25S-1Zn+Micros | Dryland: 100N-20P-15S-0.5Zn</p>
+        <!-- Irrigated Fertilizer -->
+        <section class="card expense-card irrigated-section">
+            <h2>Fertilizer Program (220N-40P-25S-1Zn+Micros)</h2>
             <table class="operations-table">
                 <thead>
                     <tr>
@@ -268,90 +197,291 @@
                         <th>Lbs/Acre</th>
                         <th>Price/Lb</th>
                         <th>Cost/Acre</th>
-                        <th>Irrigated Total</th>
-                        <th>Dryland Total</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
-                <tbody id="fertilizerBody">
-                    <!-- Populated by JavaScript -->
-                </tbody>
+                <tbody id="irrFertBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="4"><strong>Fertilizer Subtotal</strong></td>
-                        <td id="fertIrrigatedTotal">$0</td>
-                        <td id="fertDrylandTotal">$0</td>
+                        <td id="irrFertTotal">$0</td>
                     </tr>
                     <tr class="cost-per-acre-row">
-                        <td colspan="6"><strong>Fertilizer Cost Per Acre: <span id="fertCostPerAcreIrr">$0.00</span> (irrigated) | <span id="fertCostPerAcreDry">$0.00</span> (dryland)</strong></td>
-                    </tr>
-                    <tr class="total-row">
-                        <td colspan="5"><strong>Combined Total</strong></td>
-                        <td id="fertTotal">$0</td>
+                        <td colspan="5"><strong>Cost Per Acre: <span id="irrFertCostPerAcre">$0.00</span></strong></td>
                     </tr>
                 </tfoot>
             </table>
         </section>
 
-        <!-- Total Expenses Summary -->
-        <section class="card expense-summary">
-            <h2>TOTAL EXPENSES SUMMARY</h2>
-            <div class="breakdown-grid">
-                <div class="breakdown-item">
-                    <h4>Field Operations</h4>
-                    <p class="breakdown-value" id="summaryOps">$0</p>
-                </div>
-                <div class="breakdown-item">
-                    <h4>Irrigation</h4>
-                    <p class="breakdown-value" id="summaryIrr">$0</p>
-                </div>
-                <div class="breakdown-item">
-                    <h4>Land Rental</h4>
-                    <p class="breakdown-value" id="summaryRent">$0</p>
-                </div>
-                <div class="breakdown-item">
-                    <h4>Crop Insurance</h4>
-                    <p class="breakdown-value" id="summaryIns">$0</p>
-                </div>
-                <div class="breakdown-item">
-                    <h4>Chemical Program</h4>
-                    <p class="breakdown-value" id="summaryChem">$0</p>
-                </div>
-                <div class="breakdown-item">
-                    <h4>Fertilizer</h4>
-                    <p class="breakdown-value" id="summaryFert">$0</p>
-                </div>
-                <div class="breakdown-item">
-                    <h4>Application Costs</h4>
-                    <p class="breakdown-value" id="summaryApp">$0</p>
-                </div>
+        <!-- Irrigated Summary -->
+        <section class="card irrigated-summary">
+            <h2>IRRIGATED EXPENSES SUMMARY</h2>
+            <div class="summary-grid">
+                <div class="summary-item"><span>Field Operations:</span><span id="irrSummaryOps">$0</span></div>
+                <div class="summary-item"><span>Irrigation:</span><span id="irrSummaryIrr">$0</span></div>
+                <div class="summary-item"><span>Land Rental:</span><span id="irrSummaryRent">$0</span></div>
+                <div class="summary-item"><span>Crop Insurance:</span><span id="irrSummaryIns">$0</span></div>
+                <div class="summary-item"><span>Chemical Program:</span><span id="irrSummaryChem">$0</span></div>
+                <div class="summary-item"><span>Fertilizer:</span><span id="irrSummaryFert">$0</span></div>
             </div>
-            <div class="grand-total expense-total">
-                <h3>TOTAL EXPENSES: <span id="grandTotal">$0</span></h3>
-                <p>Irrigated: <span id="grandIrrigated">$0</span> (<span id="irrigatedPerAcreExp">$0</span>/ac) | Dryland: <span id="grandDryland">$0</span> (<span id="drylandPerAcreExp">$0</span>/ac)</p>
+            <div class="grand-total irrigated-total">
+                <h3>IRRIGATED TOTAL: <span id="irrigatedGrandTotal">$0</span></h3>
+                <p>Cost Per Acre: <span id="irrigatedCostPerAcre">$0.00</span></p>
             </div>
         </section>
 
         <!-- ============================================ -->
-        <!-- REVENUE & PROFIT SECTION -->
+        <!-- DRYLAND SECTION -->
         <!-- ============================================ -->
-        <div class="section-header profit-header">
-            <h2>REVENUE & PROFIT</h2>
+        <div class="section-header dryland-header">
+            <h2>DRYLAND CORN - <span id="dryAcresDisplay">600</span> Acres</h2>
+            <p>Expected Yield: <span id="drylandYield">90</span> bu/acre</p>
         </div>
 
-        <!-- Profit Analysis -->
-        <section class="card profit-card">
-            <h2>Profit Analysis</h2>
-            <div class="input-group inline">
-                <label for="cornPrice">Corn Price ($/bu):</label>
-                <input type="number" id="cornPrice" value="4.50" step="0.05" onchange="calculate()">
-            </div>
+        <!-- Dryland Field Operations -->
+        <section class="card expense-card dryland-section">
+            <h2>Field Operations</h2>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Passes</th>
+                        <th>Rate/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="dryOpsBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Operations Subtotal</strong></td>
+                        <td id="dryOpsTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
 
-            <table class="operations-table profit-table">
+        <!-- Dryland Land Rental -->
+        <section class="card expense-card dryland-section">
+            <h2>Land Rental</h2>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Details</th>
+                        <th>Rate/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="dryRentBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Land Rental Subtotal</strong></td>
+                        <td id="dryRentTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Crop Insurance -->
+        <section class="card expense-card dryland-section">
+            <h2>Crop Insurance (RCIS)</h2>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Coverage Type</th>
+                        <th>Details</th>
+                        <th>Premium/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="dryInsBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Insurance Subtotal</strong></td>
+                        <td id="dryInsTotal">$0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Pre-Emergence -->
+        <section class="card expense-card dryland-section">
+            <h2>Pre-Emergence Chemical Program</h2>
+            <p class="section-note">Applied prior to crop emergence @ 12 GPA</p>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Chemical</th>
+                        <th>Rate/Acre</th>
+                        <th>Cost/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="dryPreChemBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Pre-Emergence Subtotal</strong></td>
+                        <td id="dryPreChemTotal">$0</td>
+                    </tr>
+                    <tr class="cost-per-acre-row">
+                        <td colspan="4"><strong>Cost Per Acre: <span id="dryPreCostPerAcre">$0.00</span></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Post-Emergence -->
+        <section class="card expense-card dryland-section">
+            <h2>Post-Emergence Chemical Program</h2>
+            <p class="section-note">Applied after crop emergence @ 12 GPA (no Warrant)</p>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Chemical</th>
+                        <th>Rate/Acre</th>
+                        <th>Cost/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="dryPostChemBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Post-Emergence Subtotal</strong></td>
+                        <td id="dryPostChemTotal">$0</td>
+                    </tr>
+                    <tr class="cost-per-acre-row">
+                        <td colspan="4"><strong>Cost Per Acre: <span id="dryPostCostPerAcre">$0.00</span></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Fertilizer -->
+        <section class="card expense-card dryland-section">
+            <h2>Fertilizer Program (100N-20P-15S-0.5Zn)</h2>
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Nutrient</th>
+                        <th>Lbs/Acre</th>
+                        <th>Price/Lb</th>
+                        <th>Cost/Acre</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="dryFertBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4"><strong>Fertilizer Subtotal</strong></td>
+                        <td id="dryFertTotal">$0</td>
+                    </tr>
+                    <tr class="cost-per-acre-row">
+                        <td colspan="5"><strong>Cost Per Acre: <span id="dryFertCostPerAcre">$0.00</span></strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Dryland Summary -->
+        <section class="card dryland-summary">
+            <h2>DRYLAND EXPENSES SUMMARY</h2>
+            <div class="summary-grid">
+                <div class="summary-item"><span>Field Operations:</span><span id="drySummaryOps">$0</span></div>
+                <div class="summary-item"><span>Land Rental:</span><span id="drySummaryRent">$0</span></div>
+                <div class="summary-item"><span>Crop Insurance:</span><span id="drySummaryIns">$0</span></div>
+                <div class="summary-item"><span>Chemical Program:</span><span id="drySummaryChem">$0</span></div>
+                <div class="summary-item"><span>Fertilizer:</span><span id="drySummaryFert">$0</span></div>
+            </div>
+            <div class="grand-total dryland-total">
+                <h3>DRYLAND TOTAL: <span id="drylandGrandTotal">$0</span></h3>
+                <p>Cost Per Acre: <span id="drylandCostPerAcre">$0.00</span></p>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- COMBINED TOTALS SECTION -->
+        <!-- ============================================ -->
+        <div class="section-header combined-header">
+            <h2>COMBINED TOTALS</h2>
+            <p><span id="totalAcres">960</span> Total Acres (Irrigated + Dryland)</p>
+        </div>
+
+        <!-- Combined Expense Summary -->
+        <section class="card combined-summary">
+            <h2>TOTAL EXPENSES</h2>
+            <table class="totals-table">
                 <thead>
                     <tr>
                         <th>Category</th>
-                        <th>Irrigated (360 ac)</th>
-                        <th>Dryland (600 ac)</th>
+                        <th>Irrigated</th>
+                        <th>Dryland</th>
+                        <th>Combined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Field Operations</td>
+                        <td id="combOpsIrr">$0</td>
+                        <td id="combOpsDry">$0</td>
+                        <td id="combOpsTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td>Irrigation</td>
+                        <td id="combIrrIrr">$0</td>
+                        <td>$0</td>
+                        <td id="combIrrTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td>Land Rental</td>
+                        <td id="combRentIrr">$0</td>
+                        <td id="combRentDry">$0</td>
+                        <td id="combRentTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td>Crop Insurance</td>
+                        <td id="combInsIrr">$0</td>
+                        <td id="combInsDry">$0</td>
+                        <td id="combInsTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td>Chemical Program</td>
+                        <td id="combChemIrr">$0</td>
+                        <td id="combChemDry">$0</td>
+                        <td id="combChemTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td>Fertilizer</td>
+                        <td id="combFertIrr">$0</td>
+                        <td id="combFertDry">$0</td>
+                        <td id="combFertTotal">$0</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td><strong>TOTAL EXPENSES</strong></td>
+                        <td id="grandIrrigated">$0</td>
+                        <td id="grandDryland">$0</td>
+                        <td id="grandTotal">$0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost Per Acre</strong></td>
+                        <td id="combCostPerAcreIrr">$0.00</td>
+                        <td id="combCostPerAcreDry">$0.00</td>
+                        <td id="combCostPerAcreAvg">$0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Revenue & Profit Analysis -->
+        <section class="card profit-card">
+            <h2>REVENUE & PROFIT ANALYSIS</h2>
+            <table class="totals-table profit-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Irrigated</th>
+                        <th>Dryland</th>
                         <th>Combined</th>
                     </tr>
                 </thead>
