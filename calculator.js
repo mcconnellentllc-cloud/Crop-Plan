@@ -64,9 +64,9 @@ const CHEMICALS = [
     {
         name: 'Atrazine 4L',
         pass: 'Pre',
-        ratePerAcre: 2.0,  // qt/acre
-        unit: 'qt',
-        costPerUnit: 3.85,
+        ratePerAcre: 1.0,  // pt/acre
+        unit: 'pt',
+        costPerUnit: 1.95,  // ~$3.85/qt = $1.95/pt
         get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
     },
     {
@@ -92,6 +92,22 @@ const CHEMICALS = [
         ratePerAcre: 2.5,  // lbs/acre
         unit: 'lb',
         costPerUnit: 0.35,
+        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
+    },
+    {
+        name: 'Atrazine 4L',
+        pass: 'Post',
+        ratePerAcre: 1.0,  // pt/acre
+        unit: 'pt',
+        costPerUnit: 1.95,
+        get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
+    },
+    {
+        name: 'DiFlexx (dicamba)',
+        pass: 'Post',
+        ratePerAcre: 3.0,  // oz/acre - safened dicamba
+        unit: 'oz',
+        costPerUnit: 0.95,  // ~$12/gal = $0.95/oz
         get costPerAcre() { return this.ratePerAcre * this.costPerUnit; }
     },
     {
