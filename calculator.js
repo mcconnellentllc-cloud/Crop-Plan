@@ -42,8 +42,8 @@ const LAND_RENTAL = {
 // SEED COSTS
 // ============================================
 const SEED_COSTS = {
-    irrigated: { name: 'Corn Seed', details: '~32,000 seeds/ac', costPerAcre: 130.00 },
-    dryland: { name: 'Corn Seed', details: '~24,000 seeds/ac', costPerAcre: 56.00 }
+    irrigated: { name: 'Corn Seed', details: '32,000 seeds/ac @ $348/80k', costPerAcre: 139.20 },
+    dryland: { name: 'Corn Seed', details: '12,500 seeds/ac @ $295/80k', costPerAcre: 46.09 }
 };
 
 // ============================================
