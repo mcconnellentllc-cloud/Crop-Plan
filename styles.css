@@ -876,21 +876,44 @@ section h3 {
     font-weight: 500;
 }
 
-.input-table .actual input {
-    width: 100px;
-    padding: 8px;
-    border: 2px solid var(--primary-green);
-    border-radius: 4px;
-    font-size: 0.95rem;
-    text-align: right;
-    background: #f0fff0;
+.input-table .actual {
+    white-space: nowrap;
 }
 
-.input-table .actual input:focus {
+.dollar-input {
+    display: inline-flex;
+    align-items: center;
+    background: #f0fff0;
+    border: 2px solid var(--primary-green);
+    border-radius: 4px;
+    padding-left: 8px;
+}
+
+.dollar-input::before {
+    content: '$';
+    color: #666;
+    font-weight: 500;
+}
+
+.dollar-input input {
+    width: 80px;
+    padding: 8px;
+    padding-left: 4px;
+    border: none;
+    font-size: 0.95rem;
+    text-align: right;
+    background: transparent;
+}
+
+.dollar-input input:focus {
     outline: none;
+}
+
+.dollar-input:focus-within {
     border-color: var(--accent-gold);
     background: #fffbf0;
 }
+
 
 .input-table .difference {
     font-weight: 500;
