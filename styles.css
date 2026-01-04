@@ -680,6 +680,39 @@ main {
     opacity: 0.9;
 }
 
+/* Price Adjuster at Bottom */
+.price-adjuster-bottom {
+    margin-top: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.price-adjuster-bottom label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.price-adjuster-bottom .dollar-input {
+    background: white;
+}
+
+.price-adjuster-bottom .dollar-input input {
+    width: 70px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.price-adjuster-bottom .price-unit {
+    color: #666;
+    font-style: italic;
+}
+
 /* Summary Card Expense Style */
 .summary-card.expense {
     border-top-color: #e74c3c;

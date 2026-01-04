@@ -189,6 +189,25 @@ function formatNumber(num) {
     return new Intl.NumberFormat('en-US').format(num);
 }
 
+// Sync corn price inputs
+function syncPriceFromTop() {
+    const topPrice = document.getElementById('cornPrice').value;
+    const bottomInput = document.getElementById('cornPriceBottom');
+    if (bottomInput) {
+        bottomInput.value = topPrice;
+    }
+    calculate();
+}
+
+function syncPriceFromBottom() {
+    const bottomPrice = document.getElementById('cornPriceBottom').value;
+    const topInput = document.getElementById('cornPrice');
+    if (topInput) {
+        topInput.value = bottomPrice;
+    }
+    calculate();
+}
+
 function calculate() {
     const irrigatedAcres = parseFloat(document.getElementById('irrigatedAcres').value) || 0;
     const drylandAcres = parseFloat(document.getElementById('drylandAcres').value) || 0;
