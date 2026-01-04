@@ -621,6 +621,275 @@
                 <span class="dollar-input"><input type="number" id="cornPriceBottom" value="4.50" step="0.05" min="0" oninput="syncPriceFromBottom()"></span>
                 <span class="price-unit">per bushel</span>
             </div>
+
+            <!-- 5-Year CBOT Corn Price Chart -->
+            <div class="corn-price-chart">
+                <h3>CBOT Corn Futures - 5 Year Reference</h3>
+                <svg viewBox="0 0 700 200" class="price-chart-svg">
+                    <!-- Grid lines -->
+                    <line x1="50" y1="20" x2="50" y2="170" stroke="#e0e0e0" stroke-width="1"/>
+                    <line x1="50" y1="170" x2="680" y2="170" stroke="#e0e0e0" stroke-width="1"/>
+                    <line x1="50" y1="45" x2="680" y2="45" stroke="#f0f0f0" stroke-width="1"/>
+                    <line x1="50" y1="70" x2="680" y2="70" stroke="#f0f0f0" stroke-width="1"/>
+                    <line x1="50" y1="95" x2="680" y2="95" stroke="#f0f0f0" stroke-width="1"/>
+                    <line x1="50" y1="120" x2="680" y2="120" stroke="#f0f0f0" stroke-width="1"/>
+                    <line x1="50" y1="145" x2="680" y2="145" stroke="#f0f0f0" stroke-width="1"/>
+
+                    <!-- Y-axis labels -->
+                    <text x="45" y="25" text-anchor="end" font-size="10" fill="#666">$8.00</text>
+                    <text x="45" y="50" text-anchor="end" font-size="10" fill="#666">$7.00</text>
+                    <text x="45" y="75" text-anchor="end" font-size="10" fill="#666">$6.00</text>
+                    <text x="45" y="100" text-anchor="end" font-size="10" fill="#666">$5.00</text>
+                    <text x="45" y="125" text-anchor="end" font-size="10" fill="#666">$4.00</text>
+                    <text x="45" y="150" text-anchor="end" font-size="10" fill="#666">$3.00</text>
+                    <text x="45" y="175" text-anchor="end" font-size="10" fill="#666">$2.00</text>
+
+                    <!-- X-axis labels -->
+                    <text x="90" y="185" text-anchor="middle" font-size="10" fill="#666">2020</text>
+                    <text x="216" y="185" text-anchor="middle" font-size="10" fill="#666">2021</text>
+                    <text x="342" y="185" text-anchor="middle" font-size="10" fill="#666">2022</text>
+                    <text x="468" y="185" text-anchor="middle" font-size="10" fill="#666">2023</text>
+                    <text x="594" y="185" text-anchor="middle" font-size="10" fill="#666">2024</text>
+                    <text x="660" y="185" text-anchor="middle" font-size="10" fill="#666">2025</text>
+
+                    <!-- Price line - historical CBOT corn prices -->
+                    <!-- 2020: ~$3.50-4.50, 2021: $4-$6, 2022: $6-$8 peak, 2023: $5-$6.50, 2024: $4-$5, 2025: ~$4.50 -->
+                    <polyline
+                        points="90,135 120,130 150,120 180,100 216,85 250,70 280,55 310,40 342,35 375,50 408,60 440,75 468,90 500,100 530,110 560,115 594,120 630,118 660,120"
+                        fill="none"
+                        stroke="#1e5631"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+
+                    <!-- Current price indicator -->
+                    <circle cx="660" cy="120" r="5" fill="#c9a227"/>
+                    <text x="660" y="108" text-anchor="middle" font-size="10" fill="#c9a227" font-weight="600">$4.50</text>
+
+                    <!-- Peak price annotation -->
+                    <circle cx="342" cy="35" r="4" fill="#c0392b"/>
+                    <text x="342" y="25" text-anchor="middle" font-size="9" fill="#c0392b">$8.14 Peak</text>
+                </svg>
+                <p class="chart-note">Historical CBOT corn futures prices. Peak in May 2022 during global supply disruptions. Current prices near 5-year lows.</p>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- LEASE ARRANGEMENTS -->
+        <!-- ============================================ -->
+        <div class="section-header lease-header">
+            <h2>LEASE ARRANGEMENTS</h2>
+            <p>Compare traditional cash rent vs flex lease options</p>
+        </div>
+
+        <!-- Current Cash Lease -->
+        <section class="card lease-card">
+            <h2>Current Cash Lease Terms</h2>
+            <div class="lease-grid">
+                <div class="lease-item">
+                    <h4>Irrigated Land</h4>
+                    <div class="lease-details">
+                        <div class="lease-row">
+                            <span>Acres:</span>
+                            <strong id="leaseIrrAcres">360</strong>
+                        </div>
+                        <div class="lease-row">
+                            <span>Cash Rent/Acre:</span>
+                            <strong>$225.00</strong>
+                        </div>
+                        <div class="lease-row total">
+                            <span>Annual Rent:</span>
+                            <strong id="leaseIrrTotal">$81,000</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="lease-item">
+                    <h4>Dryland</h4>
+                    <div class="lease-details">
+                        <div class="lease-row">
+                            <span>Acres:</span>
+                            <strong id="leaseDryAcres">600</strong>
+                        </div>
+                        <div class="lease-row">
+                            <span>Cash Rent/Acre:</span>
+                            <strong>$45.00</strong>
+                        </div>
+                        <div class="lease-row total">
+                            <span>Annual Rent:</span>
+                            <strong id="leaseDryTotal">$27,000</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="lease-item combined">
+                    <h4>Combined</h4>
+                    <div class="lease-details">
+                        <div class="lease-row">
+                            <span>Total Acres:</span>
+                            <strong id="leaseTotalAcres">960</strong>
+                        </div>
+                        <div class="lease-row total">
+                            <span>Total Annual Rent:</span>
+                            <strong id="leaseTotalRent">$108,000</strong>
+                        </div>
+                        <div class="lease-row">
+                            <span>Avg Rent/Acre:</span>
+                            <strong id="leaseAvgRent">$112.50</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lease-terms">
+                <h4>Standard Terms</h4>
+                <ul>
+                    <li>Fixed annual payment regardless of yields or prices</li>
+                    <li>Tenant bears 100% of input costs and production risk</li>
+                    <li>Landowner receives guaranteed income</li>
+                    <li>Payment typically due in two installments (spring/fall)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Flex Lease Calculator -->
+        <section class="card lease-card flex-lease-card">
+            <h2>Flex Lease Calculator</h2>
+            <p class="flex-description">A flex lease shares both the risk and reward between tenant and landowner. The landowner contributes to input costs and receives a share of revenue that increases as profitability improves.</p>
+
+            <div class="flex-inputs">
+                <h4>Flex Lease Parameters</h4>
+                <div class="flex-input-grid">
+                    <div class="flex-input-item">
+                        <label for="flexLandlordCostShare">Landowner Cost Share:</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="flexLandlordCostShare" value="25" min="0" max="50" oninput="calculateFlexLease()">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="flex-input-item">
+                        <label for="flexBaseRent">Base Rent (per acre):</label>
+                        <span class="dollar-input"><input type="number" id="flexBaseRent" value="50" min="0" oninput="calculateFlexLease()"></span>
+                    </div>
+                    <div class="flex-input-item">
+                        <label for="flexTenantBreakeven">Tenant Share at Breakeven:</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="flexTenantBreakeven" value="80" min="50" max="100" oninput="calculateFlexLease()">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="flex-input-item">
+                        <label for="flexTenantProfit">Tenant Profit Share:</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="flexTenantProfit" value="55" min="0" max="100" oninput="calculateFlexLease()">
+                            <span>%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-calculation">
+                <h4>Flex Lease Breakdown</h4>
+                <table class="flex-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Tenant</th>
+                            <th>Landowner</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gross Revenue</td>
+                            <td id="flexTenantRevenue">$0</td>
+                            <td id="flexLandlordRevenue">$0</td>
+                            <td id="flexTotalRevenue">$0</td>
+                        </tr>
+                        <tr>
+                            <td>Input Costs (excl. rent)</td>
+                            <td id="flexTenantCosts">$0</td>
+                            <td id="flexLandlordCosts">$0</td>
+                            <td id="flexTotalCosts">$0</td>
+                        </tr>
+                        <tr>
+                            <td>Base Rent</td>
+                            <td id="flexTenantBaseRent">$0</td>
+                            <td id="flexLandlordBaseRent">$0</td>
+                            <td id="flexTotalBaseRent">$0</td>
+                        </tr>
+                        <tr class="subtotal-row">
+                            <td>Net After Costs</td>
+                            <td id="flexTenantNet">$0</td>
+                            <td id="flexLandlordNet">$0</td>
+                            <td id="flexTotalNet">$0</td>
+                        </tr>
+                        <tr class="profit-row">
+                            <td><strong>Bonus/Additional Share</strong></td>
+                            <td id="flexTenantBonus">$0</td>
+                            <td id="flexLandlordBonus">$0</td>
+                            <td id="flexTotalBonus">$0</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Final Net Position</strong></td>
+                            <td id="flexTenantFinal"><strong>$0</strong></td>
+                            <td id="flexLandlordFinal"><strong>$0</strong></td>
+                            <td id="flexGrandTotal"><strong>$0</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex-comparison">
+                <h4>Cash Rent vs Flex Lease Comparison</h4>
+                <div class="comparison-boxes">
+                    <div class="comp-box cash-rent">
+                        <h5>Traditional Cash Rent</h5>
+                        <div class="comp-detail">
+                            <span>Tenant Net:</span>
+                            <strong id="compCashTenant">$0</strong>
+                        </div>
+                        <div class="comp-detail">
+                            <span>Landowner Net:</span>
+                            <strong id="compCashLandlord">$0</strong>
+                        </div>
+                    </div>
+                    <div class="comp-box flex-rent">
+                        <h5>Flex Lease</h5>
+                        <div class="comp-detail">
+                            <span>Tenant Net:</span>
+                            <strong id="compFlexTenant">$0</strong>
+                        </div>
+                        <div class="comp-detail">
+                            <span>Landowner Net:</span>
+                            <strong id="compFlexLandlord">$0</strong>
+                        </div>
+                    </div>
+                    <div class="comp-box difference-box">
+                        <h5>Difference (Flex - Cash)</h5>
+                        <div class="comp-detail">
+                            <span>Tenant:</span>
+                            <strong id="compDiffTenant">$0</strong>
+                        </div>
+                        <div class="comp-detail">
+                            <span>Landowner:</span>
+                            <strong id="compDiffLandlord">$0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-terms">
+                <h4>How This Flex Lease Works</h4>
+                <ol>
+                    <li><strong>Shared Input Costs:</strong> Landowner contributes <span id="termsCostShare">25%</span> of all input costs (seed, fertilizer, chemicals, operations) excluding the base rent.</li>
+                    <li><strong>Base Rent:</strong> Tenant pays a reduced base rent of <span id="termsBaseRent">$50</span>/acre to ensure landowner receives minimum income.</li>
+                    <li><strong>Revenue at Breakeven:</strong> If revenue just covers costs, tenant receives <span id="termsBreakeven">80%</span> of revenue and landowner receives <span id="termsLandlordBreakeven">20%</span>.</li>
+                    <li><strong>Profit Sharing:</strong> After all costs are covered, profits are split <span id="termsTenantProfit">55%</span> to tenant and <span id="termsLandlordProfit">45%</span> to landowner.</li>
+                    <li><strong>Risk Sharing:</strong> In poor years, both parties share the loss proportionally. In good years, both benefit from higher prices and yields.</li>
+                </ol>
+            </div>
+
+            <div class="flex-source">
+                <p><em>Flex lease calculations based on Iowa State University Extension guidelines and common crop-share arrangements in Northeast Colorado.</em></p>
+            </div>
         </section>
 
         <!-- ============================================ -->

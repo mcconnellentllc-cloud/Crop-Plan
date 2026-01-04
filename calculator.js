@@ -819,6 +819,9 @@ function calculate() {
 
     // Update actuals display
     updateActuals();
+
+    // Update flex lease calculations
+    calculateFlexLease();
 }
 
 function styleNetReturn(elementId, value) {
@@ -970,8 +973,139 @@ function updateDiffCell(cellId, diff, isBold = false) {
     }
 }
 
+// Flex Lease Calculator
+function calculateFlexLease() {
+    if (!window.projectedValues) return;
+
+    const pv = window.projectedValues;
+
+    // Get flex lease inputs
+    const landlordCostShare = (parseFloat(document.getElementById('flexLandlordCostShare').value) || 25) / 100;
+    const baseRentPerAcre = parseFloat(document.getElementById('flexBaseRent').value) || 50;
+    const tenantBreakevenShare = (parseFloat(document.getElementById('flexTenantBreakeven').value) || 80) / 100;
+    const tenantProfitShare = (parseFloat(document.getElementById('flexTenantProfit').value) || 55) / 100;
+
+    const landlordBreakevenShare = 1 - tenantBreakevenShare;
+    const landlordProfitShare = 1 - tenantProfitShare;
+
+    // Get totals from projected values
+    const totalRevenue = pv.revenue;
+    const irrigatedAcres = pv.irr.acres;
+    const drylandAcres = pv.dry.acres;
+    const totalAcres = irrigatedAcres + drylandAcres;
+
+    // Calculate input costs excluding rent
+    // Irrigated costs per acre (excl rent): ops + irrigation + seed + ins + chem + fert
+    const irrCostsExclRent = pv.irr.ops + pv.irr.irrigation + pv.irr.seed + pv.irr.ins + pv.irr.chem + pv.irr.fert;
+    // Dryland costs per acre (excl rent): ops + seed + ins + chem + fert
+    const dryCostsExclRent = pv.dry.ops + pv.dry.seed + pv.dry.ins + pv.dry.chem + pv.dry.fert;
+
+    const totalInputCostsExclRent = (irrCostsExclRent * irrigatedAcres) + (dryCostsExclRent * drylandAcres);
+
+    // Base rent calculation
+    const totalBaseRent = baseRentPerAcre * totalAcres;
+
+    // Total costs for flex calculation
+    const totalCosts = totalInputCostsExclRent + totalBaseRent;
+
+    // Landlord cost contribution (on input costs only, not base rent)
+    const landlordCostContribution = totalInputCostsExclRent * landlordCostShare;
+    const tenantCostContribution = totalInputCostsExclRent * (1 - landlordCostShare);
+
+    // Net position after costs
+    const netAfterCosts = totalRevenue - totalCosts;
+
+    // Calculate profit/loss sharing
+    let tenantBonus = 0;
+    let landlordBonus = 0;
+
+    if (netAfterCosts > 0) {
+        // Profitable - split profit
+        tenantBonus = netAfterCosts * tenantProfitShare;
+        landlordBonus = netAfterCosts * landlordProfitShare;
+    } else {
+        // Loss - share proportionally based on cost contribution
+        // Tenant bears (1 - landlordCostShare) of the loss
+        tenantBonus = netAfterCosts * (1 - landlordCostShare);
+        landlordBonus = netAfterCosts * landlordCostShare;
+    }
+
+    // Final positions
+    // Tenant: Revenue share - their costs - base rent + bonus (or loss share)
+    const tenantFinalNet = (totalRevenue * tenantBreakevenShare) - tenantCostContribution - totalBaseRent + tenantBonus;
+
+    // Landlord: Revenue share - their cost contribution + base rent + bonus (or loss share)
+    const landlordFinalNet = (totalRevenue * landlordBreakevenShare) - landlordCostContribution + totalBaseRent + landlordBonus;
+
+    // Update flex table displays
+    document.getElementById('flexTenantRevenue').textContent = formatCurrency(totalRevenue * tenantBreakevenShare);
+    document.getElementById('flexLandlordRevenue').textContent = formatCurrency(totalRevenue * landlordBreakevenShare);
+    document.getElementById('flexTotalRevenue').textContent = formatCurrency(totalRevenue);
+
+    document.getElementById('flexTenantCosts').textContent = formatCurrency(-tenantCostContribution);
+    document.getElementById('flexLandlordCosts').textContent = formatCurrency(-landlordCostContribution);
+    document.getElementById('flexTotalCosts').textContent = formatCurrency(-totalInputCostsExclRent);
+
+    document.getElementById('flexTenantBaseRent').textContent = formatCurrency(-totalBaseRent);
+    document.getElementById('flexLandlordBaseRent').textContent = formatCurrency(totalBaseRent);
+    document.getElementById('flexTotalBaseRent').textContent = '$0';
+
+    const tenantNet = (totalRevenue * tenantBreakevenShare) - tenantCostContribution - totalBaseRent;
+    const landlordNet = (totalRevenue * landlordBreakevenShare) - landlordCostContribution + totalBaseRent;
+    document.getElementById('flexTenantNet').textContent = formatCurrency(tenantNet);
+    document.getElementById('flexLandlordNet').textContent = formatCurrency(landlordNet);
+    document.getElementById('flexTotalNet').textContent = formatCurrency(tenantNet + landlordNet);
+
+    document.getElementById('flexTenantBonus').textContent = formatCurrency(tenantBonus);
+    document.getElementById('flexLandlordBonus').textContent = formatCurrency(landlordBonus);
+    document.getElementById('flexTotalBonus').textContent = formatCurrency(tenantBonus + landlordBonus);
+
+    document.getElementById('flexTenantFinal').innerHTML = '<strong>' + formatCurrency(tenantFinalNet) + '</strong>';
+    document.getElementById('flexLandlordFinal').innerHTML = '<strong>' + formatCurrency(landlordFinalNet) + '</strong>';
+    document.getElementById('flexGrandTotal').innerHTML = '<strong>' + formatCurrency(tenantFinalNet + landlordFinalNet) + '</strong>';
+
+    // Cash rent comparison (from current lease terms)
+    const cashRentTotal = (225 * irrigatedAcres) + (45 * drylandAcres); // $225 irrigated, $45 dryland
+    const totalExpensesWithCashRent = pv.grandTotal;
+    const cashTenantNet = totalRevenue - totalExpensesWithCashRent;
+    const cashLandlordNet = cashRentTotal;
+
+    document.getElementById('compCashTenant').textContent = formatCurrency(cashTenantNet);
+    document.getElementById('compCashLandlord').textContent = formatCurrency(cashLandlordNet);
+
+    document.getElementById('compFlexTenant').textContent = formatCurrency(tenantFinalNet);
+    document.getElementById('compFlexLandlord').textContent = formatCurrency(landlordFinalNet);
+
+    const diffTenant = tenantFinalNet - cashTenantNet;
+    const diffLandlord = landlordFinalNet - cashLandlordNet;
+    document.getElementById('compDiffTenant').textContent = (diffTenant >= 0 ? '+' : '') + formatCurrency(diffTenant);
+    document.getElementById('compDiffLandlord').textContent = (diffLandlord >= 0 ? '+' : '') + formatCurrency(diffLandlord);
+
+    // Color code differences
+    document.getElementById('compDiffTenant').style.color = diffTenant >= 0 ? '#27ae60' : '#c0392b';
+    document.getElementById('compDiffLandlord').style.color = diffLandlord >= 0 ? '#27ae60' : '#c0392b';
+
+    // Update terms display
+    document.getElementById('termsCostShare').textContent = Math.round(landlordCostShare * 100) + '%';
+    document.getElementById('termsBaseRent').textContent = '$' + baseRentPerAcre;
+    document.getElementById('termsBreakeven').textContent = Math.round(tenantBreakevenShare * 100) + '%';
+    document.getElementById('termsLandlordBreakeven').textContent = Math.round(landlordBreakevenShare * 100) + '%';
+    document.getElementById('termsTenantProfit').textContent = Math.round(tenantProfitShare * 100) + '%';
+    document.getElementById('termsLandlordProfit').textContent = Math.round(landlordProfitShare * 100) + '%';
+
+    // Update lease summary (reflects current acreage from config)
+    document.getElementById('leaseIrrAcres').textContent = formatNumber(irrigatedAcres);
+    document.getElementById('leaseDryAcres').textContent = formatNumber(drylandAcres);
+    document.getElementById('leaseTotalAcres').textContent = formatNumber(totalAcres);
+    document.getElementById('leaseIrrTotal').textContent = formatCurrency(225 * irrigatedAcres);
+    document.getElementById('leaseDryTotal').textContent = formatCurrency(45 * drylandAcres);
+    document.getElementById('leaseTotalRent').textContent = formatCurrency(cashRentTotal);
+    document.getElementById('leaseAvgRent').textContent = formatCurrencyDecimal(cashRentTotal / totalAcres);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     calculate();
+    calculateFlexLease();
     document.getElementById('genDate').textContent = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
