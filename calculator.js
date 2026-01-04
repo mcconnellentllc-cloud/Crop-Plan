@@ -77,17 +77,17 @@ const CHEM_APPLICATION_RATE = 8.00;  // $8/acre per application pass
 const SPRAY_RATE_GPA = 12;
 const HYDROVANT_RATE_PERCENT = 0.001;
 const HYDROVANT_COST_PER_GAL = 165.00;
-const HYDROVANT_COST_PER_ACRE = SPRAY_RATE_GPA * HYDROVANT_RATE_PERCENT * HYDROVANT_COST_PER_GAL; // $1.98
+const HYDROVANT_COST_PER_ACRE = 1.98;  // 12 GPA * 0.1% * $165/gal
 
-// Pre-calculated chemical costs per acre
-const GLYPHOSATE_COST = 32 * 0.12;        // $3.84
-const VALOR_COST = 2.5 * 4.20;            // $10.50
-const ATRAZINE_COST = 1.0 * 1.95;         // $1.95
-const METOLACHLOR_COST = 1.33 * 8.50;     // $11.31
-const FLUROXYPYR_COST = 0.67 * 12.50;     // $8.38
-const AMS_COST = 2.5 * 0.35;              // $0.88
-const DIFLEXX_COST = 3.0 * 0.95;          // $2.85
-const WARRANT_COST = 3.0 * 4.75;          // $14.25
+// Pre-calculated chemical costs per acre (rounded to avoid floating point issues)
+const GLYPHOSATE_COST = 3.84;             // 32 oz * $0.12
+const VALOR_COST = 10.50;                 // 2.5 oz * $4.20
+const ATRAZINE_COST = 1.95;               // 1.0 pt * $1.95
+const METOLACHLOR_COST = 11.31;           // 1.33 pt * $8.50
+const FLUROXYPYR_COST = 8.38;             // 0.67 pt * $12.50
+const AMS_COST = 0.88;                    // 2.5 lb * $0.35
+const DIFLEXX_COST = 2.85;                // 3.0 oz * $0.95
+const WARRANT_COST = 14.25;               // 3.0 pt * $4.75
 
 // Pre-Emergence Chemicals (same for both)
 const PRE_CHEMICALS = [
