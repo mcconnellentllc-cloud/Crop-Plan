@@ -696,26 +696,28 @@ function calculate() {
     const dryTotalPerAcre = drylandAcres > 0 ? drylandTotal / drylandAcres : 0;
 
     // Store projected values in data attributes for later use
+    // Round to 2 decimal places to match input field precision
+    const r2 = (n) => Math.round(n * 100) / 100;
     window.projectedValues = {
         irr: {
-            ops: irrOpsPerAcre,
-            irrigation: irrIrrPerAcre,
-            rent: irrRentPerAcre,
-            seed: irrSeedPerAcre,
-            ins: irrInsPerAcre,
-            chem: irrChemPerAcre,
-            fert: irrFertPerAcre,
-            total: irrTotalPerAcre,
+            ops: r2(irrOpsPerAcre),
+            irrigation: r2(irrIrrPerAcre),
+            rent: r2(irrRentPerAcre),
+            seed: r2(irrSeedPerAcre),
+            ins: r2(irrInsPerAcre),
+            chem: r2(irrChemPerAcre),
+            fert: r2(irrFertPerAcre),
+            total: r2(irrTotalPerAcre),
             acres: irrigatedAcres
         },
         dry: {
-            ops: dryOpsPerAcre,
-            rent: dryRentPerAcre,
-            seed: drySeedPerAcre,
-            ins: dryInsPerAcre,
-            chem: dryChemPerAcre,
-            fert: dryFertPerAcre,
-            total: dryTotalPerAcre,
+            ops: r2(dryOpsPerAcre),
+            rent: r2(dryRentPerAcre),
+            seed: r2(drySeedPerAcre),
+            ins: r2(dryInsPerAcre),
+            chem: r2(dryChemPerAcre),
+            fert: r2(dryFertPerAcre),
+            total: r2(dryTotalPerAcre),
             acres: drylandAcres
         },
         revenue: totalRevenue,
