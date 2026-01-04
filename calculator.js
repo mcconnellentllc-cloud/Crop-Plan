@@ -126,6 +126,15 @@ const POST_CHEMICALS_DRY = [
 const POST_COST_PER_ACRE_IRR = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + METOLACHLOR_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + WARRANT_COST + CHEM_APPLICATION_RATE;
 const POST_COST_PER_ACRE_DRY = GLYPHOSATE_COST + AMS_COST + ATRAZINE_COST + METOLACHLOR_COST + DIFLEXX_COST + HYDROVANT_COST_PER_ACRE + CHEM_APPLICATION_RATE;
 
+// Fall Application - Dryland Only
+const FALL_CHEMICALS_DRY = [
+    { name: 'Glyphosate 41% (Generic)', ratePerAcre: 32, unit: 'oz', costPerAcre: GLYPHOSATE_COST },
+    { name: 'Atrazine 4L', ratePerAcre: 1.0, unit: 'pt', costPerAcre: ATRAZINE_COST }
+];
+
+// Pre-calculated cost per acre for Fall application (including application)
+const FALL_COST_PER_ACRE_DRY = GLYPHOSATE_COST + ATRAZINE_COST + CHEM_APPLICATION_RATE;
+
 // Fertilizer Programs - Irrigated vs Dryland
 const FERT_APPLICATION_RATE = 5.25;
 
@@ -407,6 +416,7 @@ function calculate() {
     let dryInsTotal = 0;
     let dryPreChemTotal = 0;
     let dryPostChemTotal = 0;
+    let dryFallChemTotal = 0;
     let dryFertTotal = 0;
 
     // Dryland Field Operations (no-till - no disk or strip till)
@@ -538,6 +548,34 @@ function calculate() {
     document.getElementById('dryPostChemTotal').textContent = formatCurrency(dryPostChemTotal);
     document.getElementById('dryPostCostPerAcre').textContent = formatCurrencyDecimal(POST_COST_PER_ACRE_DRY);
 
+    // Dryland Fall Application
+    const dryFallChemBody = document.getElementById('dryFallChemBody');
+    dryFallChemBody.innerHTML = '';
+    FALL_CHEMICALS_DRY.forEach(chem => {
+        const cost = chem.costPerAcre * drylandAcres;
+        dryFallChemTotal += cost;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${chem.name}</td>
+            <td>${chem.ratePerAcre} ${chem.unit}/ac</td>
+            <td>${formatCurrencyDecimal(chem.costPerAcre)}</td>
+            <td>${formatCurrency(cost)}</td>
+        `;
+        dryFallChemBody.appendChild(row);
+    });
+    const dryFallAppCost = CHEM_APPLICATION_RATE * drylandAcres;
+    dryFallChemTotal += dryFallAppCost;
+    const dryFallAppRow = document.createElement('tr');
+    dryFallAppRow.innerHTML = `
+        <td><em>Application Cost</em></td>
+        <td>@ ${SPRAY_RATE_GPA} GPA</td>
+        <td>${formatCurrencyDecimal(CHEM_APPLICATION_RATE)}</td>
+        <td>${formatCurrency(dryFallAppCost)}</td>
+    `;
+    dryFallChemBody.appendChild(dryFallAppRow);
+    document.getElementById('dryFallChemTotal').textContent = formatCurrency(dryFallChemTotal);
+    document.getElementById('dryFallCostPerAcre').textContent = formatCurrencyDecimal(FALL_COST_PER_ACRE_DRY);
+
     // Dryland Fertilizer
     const dryFertBody = document.getElementById('dryFertBody');
     dryFertBody.innerHTML = '';
@@ -569,7 +607,7 @@ function calculate() {
     document.getElementById('dryFertCostPerAcre').textContent = formatCurrencyDecimal(FERT_COST_PER_ACRE_DRY);
 
     // Dryland Summary
-    const dryChemTotal = dryPreChemTotal + dryPostChemTotal;
+    const dryChemTotal = dryPreChemTotal + dryPostChemTotal + dryFallChemTotal;
     const drylandTotal = dryOpsTotal + dryRentTotal + drySeedTotal + dryInsTotal + dryChemTotal + dryFertTotal;
     document.getElementById('drySummaryOps').textContent = formatCurrency(dryOpsTotal);
     document.getElementById('drySummaryRent').textContent = formatCurrency(dryRentTotal);
