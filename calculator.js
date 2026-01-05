@@ -15,7 +15,7 @@ const OPERATIONS_IRRIGATED = [
     { name: 'Disk (Tandem)', passes: 2, rate: 14.50 },
     { name: 'Strip Till', passes: 1, rate: 18.75 },
     { name: 'Plant (Corn)', passes: 1, rate: 22.50 },
-    { name: 'Harvest (Complete)', passes: 1, rate: 55.00 }
+    { name: 'Harvest (Complete)', passes: 1, rate: 70.00 }
 ];
 
 // Dryland - no tillage (no-till)
@@ -31,10 +31,9 @@ const HAUL_RATE_PER_BUSHEL = 0.18;
 // ============================================
 // LAND RENTAL - NE Colorado Average Rates
 // ============================================
-const LAND_RENTAL = {
-    irrigated: { name: 'Irrigated Land Rent', costPerAcre: 225.00 },
-    dryland: { name: 'Dryland Land Rent', costPerAcre: 45.00 }
-};
+// Default land rental rates (can be adjusted via inputs)
+const DEFAULT_RENT_IRRIGATED = 225.00;
+const DEFAULT_RENT_DRYLAND = 35.00;
 
 // ============================================
 // SEED COSTS
@@ -157,9 +156,9 @@ const FERT_DRYLAND = [
 const FERT_COST_PER_ACRE_IRR = (220 * 0.73) + (40 * 0.61) + (25 * 0.38) + (1 * 4.50) + (1 * 8.00) + FERT_APPLICATION_RATE;
 const FERT_COST_PER_ACRE_DRY = (80 * 0.73) + (20 * 0.61) + (15 * 0.38) + (0.5 * 4.50) + FERT_APPLICATION_RATE;
 
-// Expected yields (bu/acre)
-const IRRIGATED_YIELD = 240;
-const DRYLAND_YIELD = 90;
+// Default expected yields (bu/acre) - can be adjusted via inputs
+const DEFAULT_IRRIGATED_YIELD = 220;
+const DEFAULT_DRYLAND_YIELD = 85;
 
 // ============================================
 // CALCULATION FUNCTIONS
@@ -206,21 +205,62 @@ function syncPriceFromBottom() {
     calculate();
 }
 
+// Sync yield inputs
+function syncYieldFromTop(type) {
+    if (type === 'irrigated') {
+        const topYield = document.getElementById('irrigatedYield').value;
+        const bottomInput = document.getElementById('irrigatedYieldBottom');
+        if (bottomInput) {
+            bottomInput.value = topYield;
+        }
+    } else if (type === 'dryland') {
+        const topYield = document.getElementById('drylandYield').value;
+        const bottomInput = document.getElementById('drylandYieldBottom');
+        if (bottomInput) {
+            bottomInput.value = topYield;
+        }
+    }
+    calculate();
+}
+
+function syncYieldFromBottom(type) {
+    if (type === 'irrigated') {
+        const bottomYield = document.getElementById('irrigatedYieldBottom').value;
+        const topInput = document.getElementById('irrigatedYield');
+        if (topInput) {
+            topInput.value = bottomYield;
+        }
+    } else if (type === 'dryland') {
+        const bottomYield = document.getElementById('drylandYieldBottom').value;
+        const topInput = document.getElementById('drylandYield');
+        if (topInput) {
+            topInput.value = bottomYield;
+        }
+    }
+    calculate();
+}
+
 function calculate() {
     const irrigatedAcres = parseFloat(document.getElementById('irrigatedAcres').value) || 0;
     const drylandAcres = parseFloat(document.getElementById('drylandAcres').value) || 0;
     const totalAcres = irrigatedAcres + drylandAcres;
     const cornPrice = parseFloat(document.getElementById('cornPrice').value) || 4.50;
 
-    const irrigatedBushels = irrigatedAcres * IRRIGATED_YIELD;
-    const drylandBushels = drylandAcres * DRYLAND_YIELD;
+    // Get adjustable yields and rents from inputs
+    const irrigatedYield = parseFloat(document.getElementById('irrigatedYield').value) || DEFAULT_IRRIGATED_YIELD;
+    const drylandYield = parseFloat(document.getElementById('drylandYield').value) || DEFAULT_DRYLAND_YIELD;
+    const irrigatedRent = parseFloat(document.getElementById('irrigatedRent').value) || DEFAULT_RENT_IRRIGATED;
+    const drylandRent = parseFloat(document.getElementById('drylandRent').value) || DEFAULT_RENT_DRYLAND;
+
+    const irrigatedBushels = irrigatedAcres * irrigatedYield;
+    const drylandBushels = drylandAcres * drylandYield;
     const totalBushels = irrigatedBushels + drylandBushels;
 
     // Update display headers
     document.getElementById('irrAcresDisplay').textContent = irrigatedAcres;
     document.getElementById('dryAcresDisplay').textContent = drylandAcres;
-    document.getElementById('irrigatedYield').textContent = IRRIGATED_YIELD;
-    document.getElementById('drylandYield').textContent = DRYLAND_YIELD;
+    document.getElementById('irrigatedYieldDisplay').textContent = irrigatedYield;
+    document.getElementById('drylandYieldDisplay').textContent = drylandYield;
     document.getElementById('totalAcres').textContent = totalAcres;
 
     // ============================================
@@ -283,12 +323,12 @@ function calculate() {
     // Irrigated Land Rental
     const irrRentBody = document.getElementById('irrRentBody');
     irrRentBody.innerHTML = '';
-    irrRentTotal = LAND_RENTAL.irrigated.costPerAcre * irrigatedAcres;
+    irrRentTotal = irrigatedRent * irrigatedAcres;
     const irrRentRow = document.createElement('tr');
     irrRentRow.innerHTML = `
-        <td>${LAND_RENTAL.irrigated.name}</td>
-        <td>NE Colorado avg rate</td>
-        <td>${formatCurrencyDecimal(LAND_RENTAL.irrigated.costPerAcre)}</td>
+        <td>Irrigated Land Rent</td>
+        <td>Adjustable rate</td>
+        <td>${formatCurrencyDecimal(irrigatedRent)}</td>
         <td>${formatCurrency(irrRentTotal)}</td>
     `;
     irrRentBody.appendChild(irrRentRow);
@@ -467,12 +507,12 @@ function calculate() {
     // Dryland Land Rental
     const dryRentBody = document.getElementById('dryRentBody');
     dryRentBody.innerHTML = '';
-    dryRentTotal = LAND_RENTAL.dryland.costPerAcre * drylandAcres;
+    dryRentTotal = drylandRent * drylandAcres;
     const dryRentRow = document.createElement('tr');
     dryRentRow.innerHTML = `
-        <td>${LAND_RENTAL.dryland.name}</td>
-        <td>NE Colorado avg rate</td>
-        <td>${formatCurrencyDecimal(LAND_RENTAL.dryland.costPerAcre)}</td>
+        <td>Dryland Land Rent</td>
+        <td>Adjustable rate</td>
+        <td>${formatCurrencyDecimal(drylandRent)}</td>
         <td>${formatCurrency(dryRentTotal)}</td>
     `;
     dryRentBody.appendChild(dryRentRow);
@@ -734,7 +774,7 @@ function calculate() {
     // Calculate per-acre costs for irrigated
     const irrOpsPerAcre = irrigatedAcres > 0 ? irrOpsTotal / irrigatedAcres : 0;
     const irrIrrPerAcre = irrigatedAcres > 0 ? irrIrrigationTotal / irrigatedAcres : 0;
-    const irrRentPerAcre = LAND_RENTAL.irrigated.costPerAcre;
+    const irrRentPerAcre = irrigatedRent;
     const irrSeedPerAcre = SEED_COSTS.irrigated.costPerAcre;
     const irrInsPerAcre = irrigatedAcres > 0 ? irrInsTotal / irrigatedAcres : 0;
     const irrChemPerAcre = irrigatedAcres > 0 ? irrChemTotal / irrigatedAcres : 0;
@@ -743,7 +783,7 @@ function calculate() {
 
     // Calculate per-acre costs for dryland
     const dryOpsPerAcre = drylandAcres > 0 ? dryOpsTotal / drylandAcres : 0;
-    const dryRentPerAcre = LAND_RENTAL.dryland.costPerAcre;
+    const dryRentPerAcre = drylandRent;
     const drySeedPerAcre = SEED_COSTS.dryland.costPerAcre;
     const dryInsPerAcre = drylandAcres > 0 ? dryInsTotal / drylandAcres : 0;
     const dryChemPerAcre = drylandAcres > 0 ? dryChemTotal / drylandAcres : 0;
@@ -1062,8 +1102,10 @@ function calculateFlexLease() {
     document.getElementById('flexLandlordFinal').innerHTML = '<strong>' + formatCurrency(landlordFinalNet) + '</strong>';
     document.getElementById('flexGrandTotal').innerHTML = '<strong>' + formatCurrency(tenantFinalNet + landlordFinalNet) + '</strong>';
 
-    // Cash rent comparison (from current lease terms)
-    const cashRentTotal = (225 * irrigatedAcres) + (45 * drylandAcres); // $225 irrigated, $45 dryland
+    // Cash rent comparison (from current lease terms - using adjustable rent values)
+    const irrigatedRent = parseFloat(document.getElementById('irrigatedRent').value) || DEFAULT_RENT_IRRIGATED;
+    const drylandRent = parseFloat(document.getElementById('drylandRent').value) || DEFAULT_RENT_DRYLAND;
+    const cashRentTotal = (irrigatedRent * irrigatedAcres) + (drylandRent * drylandAcres);
     const totalExpensesWithCashRent = pv.grandTotal;
     const cashTenantNet = totalRevenue - totalExpensesWithCashRent;
     const cashLandlordNet = cashRentTotal;
@@ -1091,14 +1133,16 @@ function calculateFlexLease() {
     document.getElementById('termsTenantProfit').textContent = Math.round(tenantProfitShare * 100) + '%';
     document.getElementById('termsLandlordProfit').textContent = Math.round(landlordProfitShare * 100) + '%';
 
-    // Update lease summary (reflects current acreage from config)
+    // Update lease summary (reflects current acreage and rent rates from config)
     document.getElementById('leaseIrrAcres').textContent = formatNumber(irrigatedAcres);
     document.getElementById('leaseDryAcres').textContent = formatNumber(drylandAcres);
     document.getElementById('leaseTotalAcres').textContent = formatNumber(totalAcres);
-    document.getElementById('leaseIrrTotal').textContent = formatCurrency(225 * irrigatedAcres);
-    document.getElementById('leaseDryTotal').textContent = formatCurrency(45 * drylandAcres);
+    document.getElementById('leaseIrrRent').textContent = formatCurrencyDecimal(irrigatedRent);
+    document.getElementById('leaseDryRent').textContent = formatCurrencyDecimal(drylandRent);
+    document.getElementById('leaseIrrTotal').textContent = formatCurrency(irrigatedRent * irrigatedAcres);
+    document.getElementById('leaseDryTotal').textContent = formatCurrency(drylandRent * drylandAcres);
     document.getElementById('leaseTotalRent').textContent = formatCurrency(cashRentTotal);
-    document.getElementById('leaseAvgRent').textContent = formatCurrencyDecimal(cashRentTotal / totalAcres);
+    document.getElementById('leaseAvgRent').textContent = formatCurrencyDecimal(totalAcres > 0 ? cashRentTotal / totalAcres : 0);
 }
 
 document.addEventListener('DOMContentLoaded', function() {

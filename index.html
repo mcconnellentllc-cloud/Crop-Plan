@@ -48,6 +48,22 @@
                     <label for="cornPrice">Corn Price ($/bu):</label>
                     <span class="dollar-input"><input type="number" id="cornPrice" value="4.50" step="0.05" min="0" oninput="syncPriceFromTop()"></span>
                 </div>
+                <div class="config-item">
+                    <label for="irrigatedYield">Irrigated Yield (bu/ac):</label>
+                    <input type="number" id="irrigatedYield" value="220" min="0" oninput="syncYieldFromTop('irrigated')">
+                </div>
+                <div class="config-item">
+                    <label for="drylandYield">Dryland Yield (bu/ac):</label>
+                    <input type="number" id="drylandYield" value="85" min="0" oninput="syncYieldFromTop('dryland')">
+                </div>
+                <div class="config-item">
+                    <label for="irrigatedRent">Irrigated Rent ($/ac):</label>
+                    <span class="dollar-input"><input type="number" id="irrigatedRent" value="225" step="1" min="0" oninput="calculate()"></span>
+                </div>
+                <div class="config-item">
+                    <label for="drylandRent">Dryland Rent ($/ac):</label>
+                    <span class="dollar-input"><input type="number" id="drylandRent" value="35" step="1" min="0" oninput="calculate()"></span>
+                </div>
             </div>
         </section>
 
@@ -56,7 +72,7 @@
         <!-- ============================================ -->
         <div class="section-header irrigated-header">
             <h2>IRRIGATED CORN - <span id="irrAcresDisplay">360</span> Acres</h2>
-            <p>Expected Yield: <span id="irrigatedYield">240</span> bu/acre</p>
+            <p>Expected Yield: <span id="irrigatedYieldDisplay">220</span> bu/acre</p>
         </div>
 
         <!-- Irrigated Field Operations -->
@@ -270,7 +286,7 @@
         <!-- ============================================ -->
         <div class="section-header dryland-header">
             <h2>DRYLAND CORN - <span id="dryAcresDisplay">600</span> Acres</h2>
-            <p>Expected Yield: <span id="drylandYield">90</span> bu/acre</p>
+            <p>Expected Yield: <span id="drylandYieldDisplay">85</span> bu/acre</p>
         </div>
 
         <!-- Dryland Field Operations -->
@@ -622,6 +638,19 @@
                 <span class="price-unit">per bushel</span>
             </div>
 
+            <div class="yield-adjusters-bottom">
+                <div class="yield-adjuster">
+                    <label for="irrigatedYieldBottom">Irrigated Yield:</label>
+                    <input type="number" id="irrigatedYieldBottom" value="220" min="0" oninput="syncYieldFromBottom('irrigated')">
+                    <span class="yield-unit">bu/acre</span>
+                </div>
+                <div class="yield-adjuster">
+                    <label for="drylandYieldBottom">Dryland Yield:</label>
+                    <input type="number" id="drylandYieldBottom" value="85" min="0" oninput="syncYieldFromBottom('dryland')">
+                    <span class="yield-unit">bu/acre</span>
+                </div>
+            </div>
+
             <!-- 5-Year CBOT Corn Price Chart -->
             <div class="corn-price-chart">
                 <h3>CBOT Corn Futures - 5 Year Reference</h3>
@@ -695,7 +724,7 @@
                         </div>
                         <div class="lease-row">
                             <span>Cash Rent/Acre:</span>
-                            <strong>$225.00</strong>
+                            <strong id="leaseIrrRent">$225.00</strong>
                         </div>
                         <div class="lease-row total">
                             <span>Annual Rent:</span>
@@ -712,11 +741,11 @@
                         </div>
                         <div class="lease-row">
                             <span>Cash Rent/Acre:</span>
-                            <strong>$45.00</strong>
+                            <strong id="leaseDryRent">$35.00</strong>
                         </div>
                         <div class="lease-row total">
                             <span>Annual Rent:</span>
-                            <strong id="leaseDryTotal">$27,000</strong>
+                            <strong id="leaseDryTotal">$21,000</strong>
                         </div>
                     </div>
                 </div>
