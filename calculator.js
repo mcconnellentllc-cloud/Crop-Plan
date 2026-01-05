@@ -15,15 +15,13 @@ const OPERATIONS_IRRIGATED = [
     { name: 'Disk (Tandem)', passes: 2, rate: 14.50 },
     { name: 'Strip Till', passes: 1, rate: 18.75 },
     { name: 'Plant (Corn)', passes: 1, rate: 22.50 },
-    { name: 'Combine (Corn)', passes: 1, rate: 41.25 },
-    { name: 'Grain Cart', passes: 1, rate: 5.50 }
+    { name: 'Harvest (Complete)', passes: 1, rate: 55.00 }
 ];
 
 // Dryland - no tillage (no-till)
 const OPERATIONS_DRYLAND = [
     { name: 'Plant (Corn)', passes: 1, rate: 22.50 },
-    { name: 'Combine (Corn)', passes: 1, rate: 41.25 },
-    { name: 'Grain Cart', passes: 1, rate: 5.50 }
+    { name: 'Harvest (Complete)', passes: 1, rate: 50.00 }
 ];
 
 // Hauling Configuration - 22 miles one way
